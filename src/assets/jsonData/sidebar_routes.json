@@ -1,0 +1,277 @@
+[
+  {
+    "to": "https://localhost:5173/",
+    "icon": "fa-brands fa-firefox-browser",
+    "title": "Visit Site"
+  },
+  {
+    "to": "/",
+    "icon": "fa-solid fa-house",
+    "title": "Dashboard"
+  },
+  {
+    "type": "heading",
+    "title": "User"
+  },
+  {
+    "to": "account",
+    "icon": "fa-solid fa-id-card",
+    "title": "Account Information"
+  },
+  {
+    "to": "users",
+    "icon": "fa-solid fa-users",
+    "title": "Users",
+    "sub": [
+      {
+        "to": "all-users",
+        "icon": "fa-solid fa-house",
+        "title": "All Users"
+      },
+      {
+        "to": "add-user",
+        "icon": "fa-solid fa-house",
+        "title": "Add User"
+      }
+    ]
+  },
+  {
+    "to": "roles",
+    "icon": "fa-solid fa-shield-halved",
+    "title": "Roles",
+    "sub": [
+      {
+        "to": "all-roles",
+        "icon": "fa-solid fa-house",
+        "title": "All Roles"
+      },
+      {
+        "to": "add-role",
+        "icon": "fa-solid fa-house",
+        "title": "Add Role"
+      }
+    ]
+  },
+  {
+    "type": "heading",
+    "title": "Products"
+  },
+  {
+    "to": "products",
+    "icon": "fa-solid fa-bag-shopping",
+    "title": "Products",
+    "sub": [
+      {
+        "to": "all-products",
+        "icon": "fa-solid fa-house",
+        "title": "All Products"
+      },
+      {
+        "to": "add-product",
+        "icon": "fa-solid fa-house",
+        "title": "Add Product"
+      },
+      {
+        "to": "all-product-categories",
+        "icon": "fa-solid fa-house",
+        "title": "All Product Categories"
+      },
+      {
+        "to": "add-product-category",
+        "icon": "fa-solid fa-house",
+        "title": "Add Product Category"
+      }
+    ]
+  },
+  {
+    "to": "products-pricing",
+    "icon": "fa-solid fa-dollar-sign",
+    "title": "Products Pricing",
+    "sub": [
+      {
+        "to": "all-products-pricing",
+        "icon": "fa-solid fa-house",
+        "title": "All Products Pricing"
+      },
+      {
+        "to": "add-product-pricing",
+        "icon": "fa-solid fa-house",
+        "title": "Add Product Pricing"
+      }
+    ]
+  },
+  {
+    "to": "coupons",
+    "icon": "fa-solid fa-tag",
+    "title": "Coupons",
+    "sub": [
+      {
+        "to": "all-coupons",
+        "icon": "fa-solid fa-house",
+        "title": "All Coupons"
+      },
+      {
+        "to": "add-coupon",
+        "icon": "fa-solid fa-house",
+        "title": "Add Coupon"
+      }
+    ]
+  },
+  {
+    "to": "orders",
+    "icon": "fa-solid fa-cart-shopping",
+    "title": "Orders",
+    "sub": [
+      {
+        "to": "all-orders",
+        "icon": "fa-solid fa-house",
+        "title": "All Orders"
+      },
+      {
+        "to": "unpaid-orders",
+        "icon": "fa-solid fa-house",
+        "title": "Unpaid Orders"
+      },
+      {
+        "to": "paid-orders",
+        "icon": "fa-solid fa-house",
+        "title": "Paid Orders"
+      },
+      {
+        "to": "processing-orders",
+        "icon": "fa-solid fa-house",
+        "title": "Processing Orders"
+      },
+      {
+        "to": "shipped-orders",
+        "icon": "fa-solid fa-house",
+        "title": "Shipped Order"
+      },
+      {
+        "to": "delivered-orders",
+        "icon": "fa-solid fa-house",
+        "title": "Delivered Orders"
+      },
+      {
+        "to": "cancelled-orders",
+        "icon": "fa-solid fa-house",
+        "title": "Cancelled Order"
+      },
+      {
+        "to": "returned-orders",
+        "icon": "fa-solid fa-house",
+        "title": "Returned Order"
+      }
+    ]
+  },
+  {
+    "type": "heading",
+    "title": "Interactions"
+  },
+  {
+    "to": "blogs",
+    "icon": "fa-solid fa-blog",
+    "title": "Blogs",
+    "sub": [
+      {
+        "to": "all-blogs",
+        "icon": "fa-solid fa-house",
+        "title": "All Blogs"
+      },
+      {
+        "to": "add-blog",
+        "icon": "fa-solid fa-house",
+        "title": "Add Blog"
+      },
+      {
+        "to": "all-blog-categories",
+        "icon": "fa-solid fa-house",
+        "title": "All Blog Categories"
+      },
+      {
+        "to": "add-blog-category",
+        "icon": "fa-solid fa-house",
+        "title": "Add Blog Category"
+      }
+    ]
+  },
+  {
+    "to": "tickets",
+    "icon": "fa-solid fa-ticket",
+    "title": "Tickets",
+    "span": "2 unread",
+    "sub": [
+      {
+        "to": "all-tickets",
+        "icon": "fa-solid fa-house",
+        "title": "All Tickets"
+      },
+      {
+        "to": "add-ticket",
+        "icon": "fa-solid fa-house",
+        "title": "Add Ticket"
+      },
+      {
+        "to": "open-tickets",
+        "icon": "fa-solid fa-house",
+        "title": "Open Tickets"
+      },
+      {
+        "to": "closed-tickets",
+        "icon": "fa-solid fa-house",
+        "title": "Closed Tickets"
+      }
+    ]
+  },
+  {
+    "to": "pages",
+    "icon": "fa-solid fa-file",
+    "title": "Pages",
+    "sub": [
+      {
+        "to": "all-pages",
+        "icon": "fa-solid fa-house",
+        "title": "All Pages"
+      },
+      {
+        "to": "add-page",
+        "icon": "fa-solid fa-house",
+        "title": "Add Page"
+      }
+    ]
+  },
+  {
+    "to": "testimonials",
+    "icon": "fa-solid fa-message",
+    "title": "Testimonials",
+    "sub": [
+      {
+        "to": "all-testimonials",
+        "icon": "fa-solid fa-house",
+        "title": "All Testimonials"
+      },
+      {
+        "to": "add-testimonial",
+        "icon": "fa-solid fa-house",
+        "title": "Add Testimonial"
+      }
+    ]
+  },
+  {
+    "to": "faqs",
+    "icon": "fa-solid fa-question",
+    "title": "FAQs",
+    "sub": [
+      {
+        "to": "all-faqs",
+        "icon": "fa-solid fa-house",
+        "title": "All FAQs"
+      },
+      {
+        "to": "add-faq",
+        "icon": "fa-solid fa-house",
+        "title": "Add FAQ"
+      }
+    ]
+  }
+]

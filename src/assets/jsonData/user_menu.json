@@ -1,0 +1,16 @@
+[
+    {
+      "icon": "fa-solid fa-id-card",
+      "content": "Profile"
+    },
+    {
+      "icon": "fa-solid fa-cog",
+      "content": "Settings"
+    },
+    {
+      "icon": "fa-solid fa-sign-out",
+      "content": "Logout"
+    }
+    
+  ]
+  
