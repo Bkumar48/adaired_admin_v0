@@ -1,66 +1,70 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Table = (props) => {
-  const initDataShow =
-    props.limit && props.bodyData
-      ? props.bodyData.slice(0, Number(props.limit))
-      : props.bodyData;
+  const [dataShow, setDataShow] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
 
-      console.log(initDataShow)
+  useEffect(() => {
+    if (props.bodyData && props.limit) {
+      const start = currentPage * Number(props.limit);
+      const end = start + Number(props.limit);
+      setDataShow(props.bodyData.slice(start, end));
+    }
+  }, [props.bodyData, props.limit, currentPage]);
 
-  const [dataShow, setDataShow] = useState(initDataShow);
-
-  let pages = 1;
-
-  let range = [];
-
-  if (props.limit !== undefined) {
-    const bodyData = props.bodyData ? props.bodyData : [];
-    let page = Math.floor(bodyData.length / Number(props.limit));
-    pages = bodyData.length % Number(props.limit) === 0 ? page : page + 1;
-    range = [...Array(pages).keys()];
-  }
-
-  const [currPage, setCurrPage] = useState(0);
+  useEffect(() => {
+    if (props.bodyData) {
+      const pages = Math.ceil(props.bodyData.length / Number(props.limit));
+      // Create an array of page numbers from 0 to (pages - 1)
+      const pageRange = [...Array(pages).keys()];
+      if (pageRange.indexOf(currentPage) === -1) {
+        // If the current page is out of range, go to the first page
+        setCurrentPage(0);
+      }
+    }
+  }, [props.bodyData, props.limit, currentPage]);
 
   const selectPage = (page) => {
-    const start = Number(props.limit) * page;
-    const end = start + Number(props.limit);
-
-    setDataShow(props.bodyData.slice(start, end));
-
-    setCurrPage(page);
+    setCurrentPage(page);
   };
 
   return (
-    <div className="table-wrapper">
-      <table>
-        {props.headData && props.renderHead ? (
-          <thead>
-            <tr>
-              {props.headData.map((item, index) =>
-                props.renderHead(item, index)
-              )}
-            </tr>
-          </thead>
-        ) : null}
-        {props.bodyData && props.renderBody ? (
-          <tbody>
-            {Array.isArray && dataShow.map((item, index) => props.renderBody(item, index))}
-          </tbody>
-        ) : null}
-      </table>
-      {pages > 1 ? (
+    <div>
+      <div className="table-wrapper">
+        <table>
+          {props.headData && props.renderHead ? (
+            <thead>
+              <tr>
+                {props.headData.map((item, index) =>
+                  props.renderHead(item, index)
+                )}
+              </tr>
+            </thead>
+          ) : null}
+          {props.bodyData && props.renderBody ? (
+            <tbody>
+              {Array.isArray(dataShow)
+                ? dataShow.map((item, index) => props.renderBody(item, index))
+                : null}
+            </tbody>
+          ) : null}
+        </table>
+      </div>
+      {props.bodyData &&
+      props.limit &&
+      props.bodyData.length > Number(props.limit) ? (
         <div className="table__pagination">
-          {range.map((item, index) => (
+          {Array.from({
+            length: Math.ceil(props.bodyData.length / Number(props.limit)),
+          }).map((_, index) => (
             <div
               key={index}
               className={`table__pagination-item ${
-                currPage === index ? "active" : ""
+                currentPage === index ? "active" : ""
               }`}
               onClick={() => selectPage(index)}
             >
-              {item + 1}
+              {index + 1}
             </div>
           ))}
         </div>
