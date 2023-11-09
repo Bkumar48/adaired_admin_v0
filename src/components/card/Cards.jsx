@@ -1,17 +1,37 @@
 import { Suspense } from "react";
-
+import { Link } from "react-router-dom";
 const Cards = (props) => {
+
   return (
     <div className="card">
       {props.header && (
         <div className="card__header-box">
           <h1 className="page-header">{props.header}</h1>
-          {props.search && (
-            <div className="card__search">
-              <input type="text" placeholder="Search here..." />
-              <i className="fa-solid fa-magnifying-glass"></i>
-            </div>
-          )}
+          <div className="card__btn-box">
+            {props.search && (
+              <>
+                <button
+                  className="card__btn action__btn-item"
+                  data-tooltip="Search"
+                  onClick={props.toggleFilterPopup}
+                >
+                  <i className="fa-solid fa-search"></i>
+                </button>
+              </>
+            )}
+            {props.addnew && (
+              <>
+                <Link to={props.addnew}>
+                  <button
+                    className="card__btn action__btn-item"
+                    data-tooltip="Add New"
+                  >
+                    <i className="fa-solid fa-plus"></i>
+                  </button>
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       )}
       <Suspense fallback={<div>Loading...</div>}>{props.children}</Suspense>

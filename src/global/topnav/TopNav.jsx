@@ -30,7 +30,7 @@ const renderUserMenu = (item, index) => (
 const TopNav = () => {
   const curr_user = {
     display_name: "Bittu Kumar",
-    image: "https://i.pravatar.cc/150?img=5",
+    image: "/assets/images/avatar-15.webp",
   };
   return (
     <div className="topnav">
@@ -39,19 +39,19 @@ const TopNav = () => {
         <div className="topnav__right-item">
           {/* {dropdown here} */}
           <Dropdown
-            customToggle={() => renderUserToggle(curr_user)}
-            contentData={user_menu}
-            renderItems={(item, index) => renderUserMenu(item, index)}
-          />
-        </div>
-        <div className="topnav__right-item">
-          {/* {dropdown here} */}
-          <Dropdown
             icon="fa-solid fa-bell"
             badge="12"
             contentData={notification}
             renderItems={(item, index) => renderNotificationItem(item, index)}
             renderFooter={() => <Link to="/">View All</Link>}
+          />
+        </div>
+        <div className="topnav__right-item">
+          {/* {dropdown here} */}
+          <Dropdown
+            customToggle={() => renderUserToggle(curr_user)}
+            contentData={user_menu}
+            renderItems={(item, index) => renderUserMenu(item, index)}
           />
         </div>
       </div>

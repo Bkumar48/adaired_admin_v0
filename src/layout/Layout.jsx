@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import Sidebar from "../global/sidebar/Sidebar";
 import TopNav from "../global/topnav/TopNav";
+import FilterTableCard from "../components/filterTableCard/FilterTableCard";
 // import AllProducts from "../pages/products/AllProducts";
 
 const Dashboard = lazy(() => import("../pages/dashboard/Dashboard"));
@@ -20,7 +21,7 @@ const Layout = () => {
               <Routes>
                 <Route index element={<Dashboard />} />
                 <Route path="all-users" element={<AllUsers />} />
-                <Route path="all-products" element={<AllProducts />} />
+                <Route path="all-products" element={<FilterTableCard />} />
               </Routes>
             </Suspense>
           </div>

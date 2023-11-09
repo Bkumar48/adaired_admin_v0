@@ -53,20 +53,33 @@ const Table = (props) => {
       {props.bodyData &&
       props.limit &&
       props.bodyData.length > Number(props.limit) ? (
-        <div className="table__pagination">
-          {Array.from({
-            length: Math.ceil(props.bodyData.length / Number(props.limit)),
-          }).map((_, index) => (
-            <div
-              key={index}
-              className={`table__pagination-item ${
-                currentPage === index ? "active" : ""
-              }`}
-              onClick={() => selectPage(index)}
-            >
-              {index + 1}
-            </div>
-          ))}
+        <div className="table__footer">
+          <div className="table__pagination-info">
+            <p>
+              Showing {currentPage * Number(props.limit) + 1} to{" "}
+              {Math.min(
+                (currentPage + 1) * Number(props.limit),
+                props.bodyData.length
+              )}{" "}
+              of {props.bodyData.length} entries
+            </p>
+          </div>
+
+          <div className="table__pagination">
+            {Array.from({
+              length: Math.ceil(props.bodyData.length / Number(props.limit)),
+            }).map((_, index) => (
+              <div
+                key={index}
+                className={`table__pagination-item ${
+                  currentPage === index ? "active" : ""
+                }`}
+                onClick={() => selectPage(index)}
+              >
+                {index + 1}
+              </div>
+            ))}
+          </div>
         </div>
       ) : null}
     </div>
