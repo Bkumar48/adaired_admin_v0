@@ -2,8 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 import Sidebar from "../global/sidebar/Sidebar";
 import TopNav from "../global/topnav/TopNav";
-import FilterTableCard from "../components/filterTableCard/FilterTableCard";
-// import AllProducts from "../pages/products/AllProducts";
+import AddUser from "../pages/users/AddUser";
 
 const Dashboard = lazy(() => import("../pages/dashboard/Dashboard"));
 const AllUsers = lazy(() => import("../pages/users/AllUsers"));
@@ -20,8 +19,12 @@ const Layout = () => {
             <Suspense fallback={<div>Loading...</div>}>
               <Routes>
                 <Route index element={<Dashboard />} />
+
+                {/* Users Routes */}
                 <Route path="all-users" element={<AllUsers />} />
-                <Route path="all-products" element={<FilterTableCard />} />
+                <Route path="add-user" element={<AddUser />} />
+
+                <Route path="all-products" element={<AllProducts />} />
               </Routes>
             </Suspense>
           </div>

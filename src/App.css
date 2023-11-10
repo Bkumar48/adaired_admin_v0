@@ -58,6 +58,7 @@
 
 }
 
+
 button {
   cursor: pointer;
 }
@@ -416,6 +417,8 @@ a {
   color: #ffffff48;
 }
 
+
+
 /* *** *** *** *** Sidebar Ends *** *** *** *** */
 
 /* layout */
@@ -693,6 +696,13 @@ tbody>tr:hover {
   font-size: var(--font-size-1rem);
 }
 
+.customer_cell img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
 .customer_email {
   font-size: var(--font-size-13px);
   color: rgb(var(--gray-500));
@@ -779,8 +789,8 @@ tbody>tr:hover {
 /* *** *** *** *** Cards Ends *** *** *** *** */
 
 /* *** *** *** *** Filter Table Card Starts *** *** *** *** */
-.filter__card{
-margin-bottom: 1.5rem;
+.filter__card {
+  margin-bottom: 1.5rem;
 
 }
 
@@ -791,7 +801,7 @@ margin-bottom: 1.5rem;
   align-items: center;
 }
 
-.filter__card-header-box i{
+.filter__card-header-box i {
   height: 40px;
   width: 40px;
   font-size: 1.5rem;
@@ -806,15 +816,15 @@ margin-bottom: 1.5rem;
   justify-content: center;
 }
 
-.filter__table-card-body{
+.filter__table-card-body {
   padding: 20px;
 }
 
-.filter__table-card-body form{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
+.filter__table-card-body form {
+
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-gap: 20px;
 }
 
 .filter__table-card-body form label {
@@ -851,14 +861,14 @@ margin-bottom: 1.5rem;
   border-color: rgb(var(--gray-600));
 }
 
-.form-btn{
+.form-btn {
   display: flex;
   justify-content: flex-end;
   align-items: center;
   padding-top: 20px;
 }
 
-.form-btn button{
+.form-btn button {
   padding: 10px 20px;
   border-radius: 4px;
   border: none;
@@ -870,7 +880,7 @@ margin-bottom: 1.5rem;
   width: 100px;
 }
 
-.form-btn button:hover{
+.form-btn button:hover {
   background-color: rgb(var(--gray-1000));
   color: rgb(var(--gray-0));
 }

@@ -1,15 +1,22 @@
+// Package imports
 import { useState, useEffect, lazy, Suspense, startTransition } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 
+// Components Imports
+const Table = lazy(() => import("../../components/table/Table"));
+const Cards = lazy(() => import("../../components/card/Cards"));
 const FilterTableCard = lazy(() =>
   import("../../components/filterTableCard/FilterTableCard")
 );
 
-const customerTableHead = ["No.", "Customer", "Phone", "Role", "Actions"];
+// Table Header Data
+const TableHead = ["No.", "Customer", "Phone", "Role", "Actions"];
 
+// renderHead function
 const renderHead = (item, index) => <th key={index}>{item}</th>;
 
+// renderBody function
 const renderBody = (item, index, items) => {
   const calculateIndex = items.indexOf(item) + 1;
   return (
@@ -57,21 +64,18 @@ const renderBody = (item, index, items) => {
   );
 };
 
-const Table = lazy(() => import("../../components/table/Table"));
-const Cards = lazy(() => import("../../components/card/Cards"));
-
 const AllUsers = () => {
+  // State variables
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchInputs, setSearchInputs] = useState([]);
-
   const [filterValues, setFilterValues] = useState({});
   const [filterCardVisible, setFilterCardVisible] = useState(false);
 
-  const handleSearchChange = (filterObject) => {
-    // Update the searchInputs object with the new key-value pairs
 
+  // Handle search change
+  const handleSearchChange = (filterObject) => {
     // Filter the users.data array based on the searchInputs object
     const filteredData = users.data.filter((item) => {
       return Object.keys(filterObject).every((key) => {
@@ -152,7 +156,7 @@ const AllUsers = () => {
               exit={{ y: -100, opacity: 0 }}
             >
               <FilterTableCard
-                customerTableHead={searchInputs}
+                TableHead={searchInputs}
                 onClose={toggleFilterPopup}
                 handleSearchChange={handleSearchChange}
               />
@@ -168,7 +172,7 @@ const AllUsers = () => {
             <Suspense fallback={<div>Loading...</div>}>
               <Table
                 limit="10"
-                headData={customerTableHead}
+                headData={TableHead}
                 renderHead={(item, index) => renderHead(item, index)}
                 bodyData={filteredUsers.data}
                 renderBody={(item, index) =>
