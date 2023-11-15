@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import { Link } from "react-router-dom";
 const Cards = (props) => {
-
   return (
     <div className="card">
       {props.header && (
@@ -11,11 +10,12 @@ const Cards = (props) => {
             {props.search && (
               <>
                 <button
-                  className="card__btn action__btn-item"
+                  className="card__btn "
                   data-tooltip="Search"
                   onClick={props.toggleFilterPopup}
                 >
                   <i className="fa-solid fa-search"></i>
+                  Search
                 </button>
               </>
             )}
@@ -23,10 +23,11 @@ const Cards = (props) => {
               <>
                 <Link to={props.addnew}>
                   <button
-                    className="card__btn action__btn-item"
-                    data-tooltip="Add New"
+                    className="card__btn "
+                    data-tooltip={props.addnewText}
                   >
                     <i className="fa-solid fa-plus"></i>
+                    <p>{props.addnewText}</p>
                   </button>
                 </Link>
               </>

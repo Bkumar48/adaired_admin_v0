@@ -1,6 +1,6 @@
 // Package imports
-import { useState, useEffect, lazy, Suspense, startTransition } from "react";
 import axios from "axios";
+import { useEffect, useState, lazy, Suspense, startTransition } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Components Imports
@@ -11,51 +11,68 @@ const FilterTableCard = lazy(() =>
 );
 
 // Table Header Data
-const TableHead = ["No.", "Customer", "Phone", "Role", "Actions"];
+const TableHead = [
+  "No.",
+  "Code",
+  "Discount",
+  "Discount Type",
+  "Discount On",
+  "Created On",
+  "Expiry status",
+  "Status",
+  "Actions",
+];
 
 // renderHead function
 const renderHead = (item, index) => <th key={index}>{item}</th>;
+
+// format date function
+function formatDate(dateString) {
+  const options = {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  };
+  const formattedDate = new Date(dateString).toLocaleDateString(
+    "en-US",
+    options
+  );
+  return formattedDate;
+}
 
 // renderBody function
 const renderBody = (item, index, items) => {
   const calculateIndex = items.indexOf(item) + 1;
   return (
-    <tr key={index}>
+    <tr key={item._id}>
       <td>{calculateIndex}</td>
-      <td className="customer_cell">
-        <i className="fa-solid fa-user-tie"></i>
-        <div>
-          <p className="customer_name">
-            {item.firstName + " " + item.lastName}
-          </p>
-          <p className="customer_email">{item.email}</p>
-        </div>
+      <td>{item.code}</td>
+      <td>{item.discount}</td>
+      <td>{item.discountType === 1 ? "Percentage" : "Flat"}</td>
+      <td>{item.discount_on}</td>
+      <td>{formatDate(item.createdAt)}</td>
+      <td>
+        {item.expireStatus ? `Expired On ${item.expire}` : `${item.expire}`}
       </td>
-      <td>{item.mobile}</td>
-      <td>{item.roleType}</td>
+
+      <td className={`status-cell ${item.status ? "active" : "inactive"}`}>
+        {item.status ? "Active" : "Inactive"}
+      </td>
+
       <td>
         <div className="action__btn-cell">
-          <button
-            className="action__btn-item"
-            href="#"
-            data-tooltip="Edit User"
-          >
+          <button className="action__btn-item" href="#" data-tooltip="Edit">
             <i className="fa-solid fa-pencil"></i>
           </button>
 
-          <button
-            className="action__btn-item"
-            href="#"
-            data-tooltip="View User"
-          >
+          <button className="action__btn-item" href="#" data-tooltip="View">
             <i className="fa-solid fa-eye"></i>
           </button>
 
-          <button
-            className="action__btn-item"
-            href="#"
-            data-tooltip="Delete User"
-          >
+          <button className="action__btn-item" href="#" data-tooltip="Delete">
             <i className="fa-solid fa-trash-can"></i>
           </button>
         </div>
@@ -64,44 +81,37 @@ const renderBody = (item, index, items) => {
   );
 };
 
-const AllUsers = () => {
-  // State variables
-  const [users, setUsers] = useState([]);
+const AllCoupons = () => {
+  const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [filteredCoupon, setFilteredCoupon] = useState([]);
   const [searchInputs, setSearchInputs] = useState([]);
-  const [filterValues, setFilterValues] = useState({});
   const [filterCardVisible, setFilterCardVisible] = useState(false);
 
-
-  // Handle search change
   const handleSearchChange = (filterObject) => {
-    // Filter the users.data array based on the searchInputs object
-    const filteredData = users.data.filter((item) => {
+    const filteredData = coupons.data.filter((item) => {
       return Object.keys(filterObject).every((key) => {
         return String(item[key])
           .toLowerCase()
           .includes(filterObject[key].toLowerCase());
       });
     });
-
-    // Update the filteredUsers state with the filteredData
-    setFilteredUsers({ data: filteredData });
-
-    setFilterValues(filterObject);
+    setFilteredCoupon({ data: filteredData });
     setFilterCardVisible(true);
   };
 
+  //   Fetch Coupons
   useEffect(() => {
     startTransition(() => {
       setLoading(true);
-      setUsers([]);
+      setCoupons([]);
     });
-
-    const fetchData = async () => {
+    const fetchCoupons = async () => {
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/v1/user/all-users`,
+          `${
+            import.meta.env.VITE_API_URL
+          }/api/v1/admin/coupon/getall?limit&skip&expiryStatus=&coupon=&expiryStatus`,
           {
             headers: {
               Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}`,
@@ -110,31 +120,15 @@ const AllUsers = () => {
         );
 
         startTransition(() => {
-          setUsers(res.data);
-          setFilteredUsers(res.data);
+          setCoupons(res.data);
+          setFilteredCoupon(res.data);
           setLoading(false);
-
-          // Initialize searchInputs here when users.data is available
-          const inputs = res.data?.data[0] || {};
-          const KeysToIgnore = [
-            "updatedAt",
-            "createdAt",
-            "__v",
-            "_id",
-            "refreshToken",
-            "roleType",
-          ];
-          const filteredKeys = Object.keys(inputs).filter(
-            (key) => !KeysToIgnore.includes(key)
-          );
-          setSearchInputs(filteredKeys);
         });
       } catch (error) {
         throw new Error(error);
       }
     };
-
-    fetchData();
+    fetchCoupons();
   }, []);
 
   const toggleFilterPopup = () => {
@@ -146,7 +140,7 @@ const AllUsers = () => {
   }
 
   return (
-    <div>
+    <>
       <div className="row">
         <div className="col-12">
           {filterCardVisible && (
@@ -164,28 +158,29 @@ const AllUsers = () => {
           )}
 
           <Cards
-            header={"All Users"}
-            addnew={"/add-user"}
-            addnewText={"Add New User"}
+            header="All Coupons"
             search={true}
             toggleFilterPopup={toggleFilterPopup}
+            addnew="/add-coupon"
           >
             <Suspense fallback={<div>Loading...</div>}>
-              <Table
-                limit="10"
-                headData={TableHead}
-                renderHead={(item, index) => renderHead(item, index)}
-                bodyData={filteredUsers.data}
-                renderBody={(item, index) =>
-                  renderBody(item, index, users.data)
-                }
-              />
+              <AnimatePresence>
+                <Table
+                  limit="10"
+                  headData={TableHead}
+                  bodyData={filteredCoupon.data}
+                  renderHead={(item, index) => renderHead(item, index)}
+                  renderBody={(item, index) =>
+                    renderBody(item, index, coupons.data)
+                  }
+                />
+              </AnimatePresence>
             </Suspense>
           </Cards>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default AllUsers;
+export default AllCoupons;

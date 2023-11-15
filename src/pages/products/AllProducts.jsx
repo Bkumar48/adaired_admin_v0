@@ -90,7 +90,6 @@ const renderBody = (item, index, items) => {
 const AllProducts = () => {
   // State management
   const [products, setProducts] = useState([]);
-  const [productCategoryId, setProductCategoryId] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [searchInputs, setSearchInputs] = useState([]);
@@ -111,8 +110,6 @@ const AllProducts = () => {
 
     setFilterValues(filterObject);
     setFilterCardVisible(true);
-    console.log(filteredData);
-    // }
   };
 
   useEffect(() => {
@@ -147,7 +144,7 @@ const AllProducts = () => {
         throw new Error(error);
       }
     };
-    
+
     fetchProducts();
   }, []);
 
@@ -180,7 +177,7 @@ const AllProducts = () => {
             header="All Products"
             search={true}
             toggleFilterPopup={toggleFilterPopup}
-            addnew="/products/add-product"
+            addnew="/add-product"
           >
             <Suspense fallback={<div>Loading...</div>}>
               <Table

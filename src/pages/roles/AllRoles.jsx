@@ -1,6 +1,6 @@
 // Package imports
-import { useState, useEffect, lazy, Suspense, startTransition } from "react";
 import axios from "axios";
+import { useEffect, useState, lazy, Suspense, startTransition } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Components Imports
@@ -11,7 +11,7 @@ const FilterTableCard = lazy(() =>
 );
 
 // Table Header Data
-const TableHead = ["No.", "Customer", "Phone", "Role", "Actions"];
+const TableHead = ["No.", "Name", "Status", "Actions"];
 
 // renderHead function
 const renderHead = (item, index) => <th key={index}>{item}</th>;
@@ -20,25 +20,19 @@ const renderHead = (item, index) => <th key={index}>{item}</th>;
 const renderBody = (item, index, items) => {
   const calculateIndex = items.indexOf(item) + 1;
   return (
-    <tr key={index}>
+    <tr key={item._id}>
       <td>{calculateIndex}</td>
-      <td className="customer_cell">
-        <i className="fa-solid fa-user-tie"></i>
-        <div>
-          <p className="customer_name">
-            {item.firstName + " " + item.lastName}
-          </p>
-          <p className="customer_email">{item.email}</p>
-        </div>
+      <td>{item.name}</td>
+      <td className={`status-cell ${item.roleStatus ? "active" : "inactive"}`}>
+        {item.status && item.status === 1 ? "Active" : "Inactive"}
       </td>
-      <td>{item.mobile}</td>
-      <td>{item.roleType}</td>
+
       <td>
         <div className="action__btn-cell">
           <button
             className="action__btn-item"
             href="#"
-            data-tooltip="Edit User"
+            data-tooltip="Edit Role"
           >
             <i className="fa-solid fa-pencil"></i>
           </button>
@@ -46,7 +40,7 @@ const renderBody = (item, index, items) => {
           <button
             className="action__btn-item"
             href="#"
-            data-tooltip="View User"
+            data-tooltip="View Role"
           >
             <i className="fa-solid fa-eye"></i>
           </button>
@@ -54,7 +48,7 @@ const renderBody = (item, index, items) => {
           <button
             className="action__btn-item"
             href="#"
-            data-tooltip="Delete User"
+            data-tooltip="Delete Role"
           >
             <i className="fa-solid fa-trash-can"></i>
           </button>
@@ -64,65 +58,56 @@ const renderBody = (item, index, items) => {
   );
 };
 
-const AllUsers = () => {
-  // State variables
-  const [users, setUsers] = useState([]);
+const AllRoles = () => {
+  const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filteredUsers, setFilteredUsers] = useState([]);
-  const [searchInputs, setSearchInputs] = useState([]);
-  const [filterValues, setFilterValues] = useState({});
+  const [filteredRoles, setFilteredRoles] = useState([]);
+  const [searchInputs, setSearchInputs] = useState({});
   const [filterCardVisible, setFilterCardVisible] = useState(false);
 
-
-  // Handle search change
+  //   Handle Search
   const handleSearchChange = (filterObject) => {
-    // Filter the users.data array based on the searchInputs object
-    const filteredData = users.data.filter((item) => {
+    const filterData = roles.data.filter((item) => {
       return Object.keys(filterObject).every((key) => {
         return String(item[key])
           .toLowerCase()
           .includes(filterObject[key].toLowerCase());
       });
     });
+    setFilteredRoles({ data: filterData });
 
-    // Update the filteredUsers state with the filteredData
-    setFilteredUsers({ data: filteredData });
-
-    setFilterValues(filterObject);
     setFilterCardVisible(true);
   };
 
+  //   Fetch all roles
   useEffect(() => {
     startTransition(() => {
       setLoading(true);
-      setUsers([]);
+      setRoles([]);
     });
-
-    const fetchData = async () => {
+    const fetchRoles = async () => {
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/v1/user/all-users`,
+          `${import.meta.env.VITE_API_URL}/api/v1/users/roles/all`,
           {
             headers: {
               Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}`,
             },
           }
         );
-
         startTransition(() => {
-          setUsers(res.data);
-          setFilteredUsers(res.data);
+          setRoles(res.data);
+          setFilteredRoles(res.data);
           setLoading(false);
 
-          // Initialize searchInputs here when users.data is available
+          // Initialize the searchInputs  when the data is fetched
           const inputs = res.data?.data[0] || {};
           const KeysToIgnore = [
-            "updatedAt",
-            "createdAt",
-            "__v",
             "_id",
-            "refreshToken",
-            "roleType",
+            "__v",
+            "updated_at",
+            "created_at",
+            "description",
           ];
           const filteredKeys = Object.keys(inputs).filter(
             (key) => !KeysToIgnore.includes(key)
@@ -133,8 +118,7 @@ const AllUsers = () => {
         throw new Error(error);
       }
     };
-
-    fetchData();
+    fetchRoles();
   }, []);
 
   const toggleFilterPopup = () => {
@@ -144,9 +128,8 @@ const AllUsers = () => {
   if (loading) {
     return <div>Loading...</div>;
   }
-
   return (
-    <div>
+    <>
       <div className="row">
         <div className="col-12">
           {filterCardVisible && (
@@ -162,30 +145,28 @@ const AllUsers = () => {
               />
             </motion.div>
           )}
-
           <Cards
-            header={"All Users"}
-            addnew={"/add-user"}
-            addnewText={"Add New User"}
+            header="All Roles"
             search={true}
             toggleFilterPopup={toggleFilterPopup}
+            addnew="/roles/add-role"
           >
             <Suspense fallback={<div>Loading...</div>}>
               <Table
                 limit="10"
                 headData={TableHead}
                 renderHead={(item, index) => renderHead(item, index)}
-                bodyData={filteredUsers.data}
+                bodyData={filteredRoles.data}
                 renderBody={(item, index) =>
-                  renderBody(item, index, users.data)
+                  renderBody(item, index, roles.data)
                 }
               />
             </Suspense>
           </Cards>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default AllUsers;
+export default AllRoles;

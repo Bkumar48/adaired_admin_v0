@@ -11,7 +11,14 @@ const FilterTableCard = lazy(() =>
 );
 
 // Table Header Data
-const TableHead = ["No.", "Customer", "Phone", "Role", "Actions"];
+const TableHead = [
+  "No.",
+  "Category",
+  "Parent Category",
+  "Slug",
+  "Status",
+  "Actions",
+];
 
 // renderHead function
 const renderHead = (item, index) => <th key={index}>{item}</th>;
@@ -22,39 +29,39 @@ const renderBody = (item, index, items) => {
   return (
     <tr key={index}>
       <td>{calculateIndex}</td>
-      <td className="customer_cell">
-        <i className="fa-solid fa-user-tie"></i>
-        <div>
-          <p className="customer_name">
-            {item.firstName + " " + item.lastName}
-          </p>
-          <p className="customer_email">{item.email}</p>
-        </div>
+      <td>{item.name}</td>
+      <td>{item.parent_id}</td>
+      <td>{item.slug}</td>
+      <td
+        className={`status-cell ${
+          item.category_status ? "active" : "inactive"
+        }`}
+      >
+        {item.category_status ? "Active" : "Inactive"}
       </td>
-      <td>{item.mobile}</td>
-      <td>{item.roleType}</td>
+
       <td>
         <div className="action__btn-cell">
           <button
             className="action__btn-item"
             href="#"
-            data-tooltip="Edit User"
+            data-tooltip="Edit Category"
           >
             <i className="fa-solid fa-pencil"></i>
           </button>
 
-          <button
+          {/* <button
             className="action__btn-item"
             href="#"
-            data-tooltip="View User"
+            data-tooltip="View Category"
           >
             <i className="fa-solid fa-eye"></i>
-          </button>
+          </button> */}
 
           <button
             className="action__btn-item"
             href="#"
-            data-tooltip="Delete User"
+            data-tooltip="Delete Category"
           >
             <i className="fa-solid fa-trash-can"></i>
           </button>
@@ -63,66 +70,46 @@ const renderBody = (item, index, items) => {
     </tr>
   );
 };
-
-const AllUsers = () => {
-  // State variables
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filteredUsers, setFilteredUsers] = useState([]);
+const AllProductCategories = () => {
+  const [productCategories, setProductCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [filteredProductCategories, setFilteredProductCategories] = useState(
+    []
+  );
+  const [error, setError] = useState(null);
   const [searchInputs, setSearchInputs] = useState([]);
-  const [filterValues, setFilterValues] = useState({});
   const [filterCardVisible, setFilterCardVisible] = useState(false);
 
-
-  // Handle search change
-  const handleSearchChange = (filterObject) => {
-    // Filter the users.data array based on the searchInputs object
-    const filteredData = users.data.filter((item) => {
-      return Object.keys(filterObject).every((key) => {
-        return String(item[key])
-          .toLowerCase()
-          .includes(filterObject[key].toLowerCase());
-      });
-    });
-
-    // Update the filteredUsers state with the filteredData
-    setFilteredUsers({ data: filteredData });
-
-    setFilterValues(filterObject);
-    setFilterCardVisible(true);
-  };
-
+  // Fetch All Product Categories
   useEffect(() => {
     startTransition(() => {
       setLoading(true);
-      setUsers([]);
+      setProductCategories([]);
     });
 
-    const fetchData = async () => {
+    const fetchProductCategories = async () => {
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/v1/user/all-users`,
+          `${import.meta.env.VITE_API_URL}/api/v1/product/productCateList`,
           {
             headers: {
               Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}`,
             },
           }
         );
-
         startTransition(() => {
-          setUsers(res.data);
-          setFilteredUsers(res.data);
+          setProductCategories(res.data);
+          setFilteredProductCategories(res.data);
           setLoading(false);
 
-          // Initialize searchInputs here when users.data is available
+          // Initialize the searchInputs state with the data from the API
           const inputs = res.data?.data[0] || {};
           const KeysToIgnore = [
-            "updatedAt",
-            "createdAt",
-            "__v",
             "_id",
-            "refreshToken",
-            "roleType",
+            "created_at",
+            "updated_at",
+            "description",
+            "image",
           ];
           const filteredKeys = Object.keys(inputs).filter(
             (key) => !KeysToIgnore.includes(key)
@@ -133,8 +120,7 @@ const AllUsers = () => {
         throw new Error(error);
       }
     };
-
-    fetchData();
+    fetchProductCategories();
   }, []);
 
   const toggleFilterPopup = () => {
@@ -144,48 +130,32 @@ const AllUsers = () => {
   if (loading) {
     return <div>Loading...</div>;
   }
-
   return (
-    <div>
+    <>
       <div className="row">
         <div className="col-12">
-          {filterCardVisible && (
-            <motion.div
-              initial={{ y: -100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -100, opacity: 0 }}
-            >
-              <FilterTableCard
-                TableHead={searchInputs}
-                onClose={toggleFilterPopup}
-                handleSearchChange={handleSearchChange}
-              />
-            </motion.div>
-          )}
-
           <Cards
-            header={"All Users"}
-            addnew={"/add-user"}
-            addnewText={"Add New User"}
-            search={true}
+            header="All Product Categories"
+            search={false}
             toggleFilterPopup={toggleFilterPopup}
+            addnew="/add-product-category"
           >
             <Suspense fallback={<div>Loading...</div>}>
               <Table
                 limit="10"
                 headData={TableHead}
                 renderHead={(item, index) => renderHead(item, index)}
-                bodyData={filteredUsers.data}
+                bodyData={filteredProductCategories.data}
                 renderBody={(item, index) =>
-                  renderBody(item, index, users.data)
+                  renderBody(item, index, productCategories.data)
                 }
               />
             </Suspense>
           </Cards>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
-export default AllUsers;
+export default AllProductCategories;
