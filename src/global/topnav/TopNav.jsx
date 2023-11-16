@@ -1,7 +1,7 @@
 import Dropdown from "./topnav_components/Dropdown";
 import user_menu from "../../assets/jsonData/user_menu.json";
 import notification from "../../assets/jsonData/notification.json";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const renderNotificationItem = (item, index) => (
   <div className="notification-item" key={index}>
     <i className={item.icon}></i>
@@ -18,14 +18,35 @@ const renderUserToggle = (user) => (
   </div>
 );
 
-const renderUserMenu = (item, index) => (
-  <Link to="/" key={index}>
-    <div className="notification-item">
-      <i className={item.icon}></i>
-      <span>{item.content}</span>
-    </div>
-  </Link>
-);
+const renderUserMenu = (item, index) => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // Remove token from session storage
+    sessionStorage.removeItem("token");
+
+    // Navigate to login page
+    navigate("/");
+  };
+
+  if (item.content === "Logout") {
+    return (
+      <div className="notification-item" key={index} onClick={handleLogout}>
+        <i className={item.icon}></i>
+        <span>{item.content}</span>
+      </div>
+    );
+  }
+
+  return (
+    <Link to={item.to} key={index}>
+      <div className="notification-item">
+        <i className={item.icon}></i>
+        <span>{item.content}</span>
+      </div>
+    </Link>
+  );
+};
 
 const TopNav = () => {
   const curr_user = {

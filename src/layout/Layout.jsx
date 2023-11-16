@@ -1,114 +1,107 @@
-import { Routes, Route, useLocation } from "react-router-dom";
-import { Suspense, lazy, useEffect, useState } from "react";
+import { Routes, Route } from "react-router-dom";
+import { Suspense, lazy, useState, useEffect } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 
-// Pages Imports
-const Sidebar = lazy(() => import("../global/sidebar/Sidebar"));
-const TopNav = lazy(() => import("../global/topnav/TopNav"));
-const Dashboard = lazy(() => import("../pages/dashboard/Dashboard"));
-const AddUser = lazy(() => import("../pages/users/AddUser"));
-const AllUsers = lazy(() => import("../pages/users/AllUsers"));
-const AllProducts = lazy(() => import("../pages/products/AllProducts"));
-const AllCoupons = lazy(() => import("../pages/coupons/AllCoupons"));
-const AllRoles = lazy(() => import("../pages/roles/AllRoles"));
-const AllProductCategories = lazy(() =>
-  import("../pages/products/AllProductCategories")
+// Higher-order component for lazy loading
+const lazyComponent = (importStatement) => lazy(() => import(importStatement));
+
+// Components
+const NotLoggedIn = lazyComponent("../components/404_notLoggedin/NotLoggedIn");
+const Sidebar = lazyComponent("../global/sidebar/Sidebar");
+const TopNav = lazyComponent("../global/topnav/TopNav");
+const Dashboard = lazyComponent("../pages/dashboard/Dashboard");
+const AddUser = lazyComponent("../pages/users/AddUser");
+const AllUsers = lazyComponent("../pages/users/AllUsers");
+const AllProducts = lazyComponent("../pages/products/AllProducts");
+const AllCoupons = lazyComponent("../pages/coupons/AllCoupons");
+const AllRoles = lazyComponent("../pages/roles/AllRoles");
+const AllProductCategories = lazyComponent(
+  "../pages/products/AllProductCategories"
 );
-const AllOrders = lazy(() => import("../pages/orders/AllOrders"));
-const AllBlogs = lazy(() => import("../pages/blogs/AllBlogs"));
-const AllBlogsCategories = lazy(() =>
-  import("../pages/blogs/AllBlogCategories")
-);
-const AllTickets = lazy(() => import("../pages/tickets/AllTickets"));
-const AllPages = lazy(() => import("../pages/pages/AllPages"));
-const AllTestimonials = lazy(() =>
-  import("../pages/testimonials/AllTestimonials")
-);
-const AllFaqs = lazy(() => import("../pages/faqs/AllFaqs"));
-const AllFaqCategories = lazy(() => import("../pages/faqs/AllFaqCategories"));
-const LoginSignup = lazy(() => import("../pages/login_signup/LoginSignup"));
+const AllOrders = lazyComponent("../pages/orders/AllOrders");
+const AllBlogs = lazyComponent("../pages/blogs/AllBlogs");
+const AllBlogsCategories = lazyComponent("../pages/blogs/AllBlogCategories");
+const AllTickets = lazyComponent("../pages/tickets/AllTickets");
+const AllPages = lazyComponent("../pages/pages/AllPages");
+const AllTestimonials = lazyComponent("../pages/testimonials/AllTestimonials");
+const AllFaqs = lazyComponent("../pages/faqs/AllFaqs");
+const AllFaqCategories = lazyComponent("../pages/faqs/AllFaqCategories");
+const LoginSignup = lazyComponent("../pages/login_signup/LoginSignup");
 
 const Layout = () => {
-  const location = useLocation();
-  const [isLoginPage, setIsLoginPage] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
   useEffect(() => {
-    setIsLoginPage(location.pathname === "/");
-  }, [location.pathname]);
+    // Check for token in session storage
+    const token = sessionStorage.getItem("token");
+
+    // Update login status based on the presence of the token
+    setIsUserLoggedIn(Boolean(token));
+
+    // Set loading to false after checking session storage
+    setLoading(false);
+  }, []);
+
+  // Wait until the session storage check is complete
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
 
   return (
-    <>
-      {location.pathname === "/" ? (
-        <div className="layout">
-          <Suspense fallback={<div>Loading...</div>}>
-            <Routes>
-              <Route index element={<LoginSignup />} />
-            </Routes>
-          </Suspense>
-        </div>
-      ) : (
-        <div className="layout">
+    <div className="layout">
+      {isUserLoggedIn ? (
+        <>
           <Sidebar />
           <div className="layout__content">
             <TopNav />
             <div className="layout__content-main">
               <Suspense fallback={<div>Loading...</div>}>
                 <Routes>
-                  <Route index element={<LoginSignup />} />
-                  <Route path="dashboard" element={<Dashboard />} />
-
-                  {/* Users Routes */}
-                  <Route path="all-users" element={<AllUsers />} />
-                  <Route path="add-user" element={<AddUser />} />
-
-                  {/* Roles Routes */}
-                  <Route path="all-roles" element={<AllRoles />} />
-
-                  {/* Products Routes */}
-                  <Route path="all-products" element={<AllProducts />} />
-                  <Route
-                    path="all-product-categories"
-                    element={<AllProductCategories />}
-                  />
-
-                  {/* Coupons Routes */}
-                  <Route path="all-coupons" element={<AllCoupons />} />
-
-                  {/* Orders Routes */}
-                  <Route path="all-orders" element={<AllOrders />} />
-
-                  {/* Blogs Routes */}
-                  <Route path="all-blogs" element={<AllBlogs />} />
-                  <Route
-                    path="all-blog-categories"
-                    element={<AllBlogsCategories />}
-                  />
-
-                  {/* Tickets Routs */}
-                  <Route path="all-tickets" element={<AllTickets />} />
-
-                  {/* Pages Routes */}
-                  <Route path="/all-pages" element={<AllPages />} />
-
-                  {/* Testimonials Routes */}
-                  <Route
-                    path="all-testimonials"
-                    element={<AllTestimonials />}
-                  />
-
-                  {/* FAQs Routes */}
-                  <Route path="all-faqs" element={<AllFaqs />} />
-                  <Route
-                    path="all-faq-categories"
-                    element={<AllFaqCategories />}
-                  />
+                  {routes.map((route, index) => (
+                    <Route key={index} {...route} />
+                  ))}
                 </Routes>
               </Suspense>
             </div>
           </div>
-        </div>
+        </>
+      ) : (
+        <ErrorBoundary>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Routes>
+              <Route
+                index
+                element={<LoginSignup setIsUserLoggedIn={setIsUserLoggedIn} />}
+              />
+              {/* Redirect to login if user is not logged in */}
+              <Route path="*" element={<NotLoggedIn />} />
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
       )}
-    </>
+    </div>
   );
 };
 
 export default Layout;
+
+// Separate route configuration
+const routes = [
+  { path: "/", element: <Dashboard /> },
+  { path: "all-users", element: <AllUsers /> },
+  { path: "add-user", element: <AddUser /> },
+  { path: "all-roles", element: <AllRoles /> },
+  { path: "all-products", element: <AllProducts /> },
+  { path: "all-product-categories", element: <AllProductCategories /> },
+  { path: "all-coupons", element: <AllCoupons /> },
+  { path: "all-orders", element: <AllOrders /> },
+  { path: "all-blogs", element: <AllBlogs /> },
+  { path: "all-blog-categories", element: <AllBlogsCategories /> },
+  { path: "all-tickets", element: <AllTickets /> },
+  { path: "all-pages", element: <AllPages /> },
+  { path: "all-testimonials", element: <AllTestimonials /> },
+  { path: "all-faqs", element: <AllFaqs /> },
+  { path: "all-faq-categories", element: <AllFaqCategories /> },
+];

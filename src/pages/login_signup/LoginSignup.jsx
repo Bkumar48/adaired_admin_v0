@@ -1,14 +1,22 @@
 import axios from "axios";
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { useMutation } from "react-query";
 import { useNavigate } from "react-router-dom";
-import { queryClient } from "../../utils/queryClient";
+import { queryClient } from "../../utils/QueryClient/queryClient.js";
+const FormInput = lazy(() =>
+  import("../../components/FormInput/FormInput.jsx")
+);
 
-const LoginSignup = () => {
+const LoginSignup = (props) => {
   const [isSignUpMode, setIsSignUpMode] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [user, setUser] = useState({
+    firstName: "",
+    lastName: "",
+    name: "",
+    email: "",
+    contact: "",
+    password: "",
+  });
 
   const navigate = useNavigate();
 
@@ -16,24 +24,84 @@ const LoginSignup = () => {
     setIsSignUpMode(!isSignUpMode);
   };
 
-  const mutation = useMutation(
+  //   *** *** *** Signin Mutation *** *** ***
+  const signin = useMutation(
     (userData) =>
       axios.post(`${import.meta.env.VITE_API_URL}/api/v1/user/login`, userData),
     {
       onSuccess: (data) => {
-        const token = data.token;
+        const token = data.data.token;
+        props.setIsUserLoggedIn(true);
         sessionStorage.setItem("token", token);
-        navigate("/dashboard");
+        navigate("/");
+      },
+      onError: (error) => {
+        console.log("Signin Error:", error.response.data.message);
       },
       onSettled: () => {
-        queryClient.invalidateQueries('userData');
-      }
+        queryClient.invalidateQueries("userData");
+      },
     }
   );
 
   const handleSignIn = (e) => {
     e.preventDefault();
-    mutation.mutate({ email, password });
+    try {
+      // Show loading state
+      signin.mutate({ email: user.email, password: user.password });
+    } catch (error) {
+      // Handle API error
+      console.error("Sign In Error:", error.response.data.message);
+    }
+  };
+
+  //   *** *** *** Signup Mutation *** *** ***
+
+  const signup = useMutation(
+    (userData) =>
+      axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/user/register`,
+        userData
+      ),
+    {
+      onSuccess: () => {
+        setIsSignUpMode(false);
+      },
+      onError: (error) => {
+        console.log("Signin Error:", error.response.data.message);
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries("userData");
+      },
+    }
+  );
+
+  const handleSignUp = (e) => {
+    e.preventDefault();
+    try {
+      // Show loading state
+      const firstName =
+        user.name.split(" ").length > 1 ? user.name.split(" ")[0] : user.name;
+      const lastName =
+        user.name.split(" ").length > 1 ? user.name.split(" ")[1] : "";
+      signup.mutate({
+        firstName,
+        lastName,
+        email: user.email,
+        contact: user.contact,
+        password: user.password,
+      });
+      console.log({
+        firstName,
+        lastName,
+        email: user.email,
+        contact: user.contact,
+        password: user.password,
+      });
+    } catch (error) {
+      // Handle API error
+      console.error("Sign Up Error:", error);
+    }
   };
 
   return (
@@ -57,27 +125,29 @@ const LoginSignup = () => {
                 </div>
                 <div className="actual-form">
                   <div className="input-wrap">
-                    <input
+                    <FormInput
                       type="email"
                       id="login_email"
                       required
-                      autoComplete="off"
-                      className="login__signup-input"
                       placeholder="Email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      value={user.email}
+                      onChange={(e) =>
+                        setUser({ ...user, email: e.target.value })
+                      }
+                      className="login__signup-input"
                     />
                   </div>
                   <div className="input-wrap">
-                    <input
+                    <FormInput
                       type="password"
                       id="login_pass"
                       required
-                      autoComplete="off"
-                      className="login__signup-input"
                       placeholder="Password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      value={user.password}
+                      onChange={(e) =>
+                        setUser({ ...user, password: e.target.value })
+                      }
+                      className="login__signup-input"
                     />
                   </div>
                   <div className="forgot_password">
@@ -87,9 +157,9 @@ const LoginSignup = () => {
                     <button
                       className="login__signup-btn defbtn"
                       type="submit"
-                      disabled={mutation.isLoading}
+                      disabled={signin.isLoading}
                     >
-                      {mutation.isLoading ? "Signing In..." : "Sign In"}
+                      {signin.isLoading ? "Signing In..." : "Sign In"}
                     </button>
                   </div>
                 </div>
@@ -154,7 +224,7 @@ const LoginSignup = () => {
               </form>
 
               {/*** *** *** *** *** *** *** / SIGN UP FORM / *** *** *** *** *** *** ***/}
-              <form action="" className="sign-up-form">
+              <form action="" className="sign-up-form" onSubmit={handleSignUp}>
                 <div className="login__signup-form-logo">
                   <img src={`/assets/images/logo.png`} alt="Logo" />
                 </div>
@@ -164,43 +234,56 @@ const LoginSignup = () => {
                 </div>
                 <div className="actual-signup-form">
                   <div className="signup-input">
-                    <input
+                    <FormInput
                       type="text"
                       id="signup_name"
                       required
-                      autoComplete="off"
-                      className="login__signup-input"
                       placeholder="Full Name"
+                      value={user.name}
+                      onChange={(e) =>
+                        setUser({ ...user, name: e.target.value })
+                      }
+                      className="login__signup-input"
                     />
                   </div>
                   <div className="signup-input">
-                    <input
+                    <FormInput
                       type="email"
                       id="signup_email"
                       required
-                      autoComplete="off"
-                      className="login__signup-input"
                       placeholder="Email"
+                      value={user.email}
+                      onChange={(e) =>
+                        setUser({ ...user, email: e.target.value })
+                      }
+                      className="login__signup-input"
                     />
                   </div>
                   <div className="signup-input">
-                    <input
-                      type="text"
+                    <FormInput
+                      type="tel"
                       id="signup_phone"
                       required
-                      autoComplete="off"
+                      placeholder="Contact Number"
+                      value={user.contact}
+                      onChange={(value) => {
+                        setUser({ ...user, contact: value });
+                        console.log(value);
+                      }}
                       className="login__signup-input"
-                      placeholder="Phone Number"
                     />
                   </div>
-                  <div className=" signup-input">
-                    <input
+                  <div className="signup-input">
+                    <FormInput
                       type="password"
                       id="signup_pass"
                       required
-                      autoComplete="off"
-                      className="login__signup-input"
                       placeholder="Password"
+                      value={user.password}
+                      onChange={(e) =>
+                        setUser({ ...user, password: e.target.value })
+                      }
+                      className="login__signup-input"
                     />
                   </div>
                   <div className="input-wrap">

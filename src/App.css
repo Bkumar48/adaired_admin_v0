@@ -1029,6 +1029,11 @@ tbody>tr:hover {
   font-family: "Nunito Sans", sans-serif;
 }
 
+input[type="tel"] {
+  padding-left: 3rem;
+}
+
+
 .login__signup-btn {
   width: 100%;
   margin-top: 1.25rem;
@@ -1180,11 +1185,12 @@ tbody>tr:hover {
 
 
 /* *** *** *** *** MEDIA QUERIES *** *** *** *** */
-@media(max-width:768px){
-  .login__signup-wrapper{
+@media(max-width:768px) {
+  .login__signup-wrapper {
     height: auto;
     max-width: 550px;
     overflow: hidden;
   }
 }
+
 /* *** *** *** *** MEDIA QUERIES *** *** *** *** */

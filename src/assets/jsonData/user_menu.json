@@ -1,16 +1,17 @@
 [
-    {
-      "icon": "fa-solid fa-id-card",
-      "content": "Profile"
-    },
-    {
-      "icon": "fa-solid fa-cog",
-      "content": "Settings"
-    },
-    {
-      "icon": "fa-solid fa-sign-out",
-      "content": "Logout"
-    }
+  {
+    "icon": "fa-solid fa-id-card",
+    "content": "Profile",
+    "to": "account"
+  },
+  {
+    "icon": "fa-solid fa-cog",
+    "content": "Settings",
+    "to": "settings"
+  },
+  {
+    "icon": "fa-solid fa-sign-out",
+    "content": "Logout"
     
-  ]
-  
+  }
+]
