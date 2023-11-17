@@ -30,17 +30,21 @@ const LoginSignup = lazyComponent("../pages/login_signup/LoginSignup");
 
 const Layout = () => {
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
   useEffect(() => {
-    // Check for token in session storage
-    const token = sessionStorage.getItem("token");
-
-    // Update login status based on the presence of the token
-    setIsUserLoggedIn(Boolean(token));
-
-    // Set loading to false after checking session storage
-    setLoading(false);
+    try {
+      // Check for token in session storage
+      const token = sessionStorage.getItem("token");
+      // Update login status based on the presence of the token
+      setIsUserLoggedIn(Boolean(token));
+    } catch (error) {
+      setError(error);
+    } finally {
+      // Set loading to false after checking session storage
+      setLoading(false);
+    }
   }, []);
 
   // Wait until the session storage check is complete
@@ -48,6 +52,10 @@ const Layout = () => {
     return <div>Loading...</div>;
   }
 
+  // Handle errors
+  if (error) {
+    return <div>Something went wrong: {error.message}</div>;
+  }
 
   return (
     <div className="layout">
@@ -55,11 +63,12 @@ const Layout = () => {
         <>
           <Sidebar />
           <div className="layout__content">
-            <TopNav />
+            <TopNav setIsUserLoggedIn={setIsUserLoggedIn} />
             <div className="layout__content-main">
               <Suspense fallback={<div>Loading...</div>}>
                 <Routes>
-                  {routes.map((route, index) => (
+                  <Route index element={<Dashboard />} />
+                  {dashboardRoutes.map((route, index) => (
                     <Route key={index} {...route} />
                   ))}
                 </Routes>
@@ -88,8 +97,7 @@ const Layout = () => {
 export default Layout;
 
 // Separate route configuration
-const routes = [
-  { path: "/", element: <Dashboard /> },
+const dashboardRoutes = [
   { path: "all-users", element: <AllUsers /> },
   { path: "add-user", element: <AddUser /> },
   { path: "all-roles", element: <AllRoles /> },
