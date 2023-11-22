@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy, useState, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
+
 // Higher-order component for lazy loading
 const lazyComponent = (importStatement) => lazy(() => import(importStatement));
 
@@ -27,6 +28,7 @@ const AllTestimonials = lazyComponent("../pages/testimonials/AllTestimonials");
 const AllFaqs = lazyComponent("../pages/faqs/AllFaqs");
 const AllFaqCategories = lazyComponent("../pages/faqs/AllFaqCategories");
 const LoginSignup = lazyComponent("../pages/login_signup/LoginSignup");
+const AddServices = lazyComponent("../pages/services/addService/AddServices");
 
 const Layout = () => {
   const [loading, setLoading] = useState(true);
@@ -112,4 +114,5 @@ const dashboardRoutes = [
   { path: "all-testimonials", element: <AllTestimonials /> },
   { path: "all-faqs", element: <AllFaqs /> },
   { path: "all-faq-categories", element: <AllFaqCategories /> },
+  { path: "add-service", element: <AddServices />}
 ];

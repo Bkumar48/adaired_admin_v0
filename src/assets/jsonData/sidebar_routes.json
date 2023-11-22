@@ -165,6 +165,33 @@
     ]
   },
   {
+    "to":"services",
+    "icon":"fa-solid fa-bag-shopping",
+    "title":"Services",
+    "sub":[
+      {
+        "to":"all-services",
+        "icon":"fa-solid fa-house",
+        "title":"All Services"
+      },
+      {
+        "to":"add-service",
+        "icon":"fa-solid fa-house",
+        "title":"Add Service"
+      },
+      {
+        "to":"all-service-categories",
+        "icon":"fa-solid fa-house",
+        "title":"All Service Categories"
+      },
+      {
+        "to":"add-service-category",
+        "icon":"fa-solid fa-house",
+        "title":"Add Service Category"
+      }
+    ]
+  },
+  {
     "type": "heading",
     "title": "Interactions"
   },
