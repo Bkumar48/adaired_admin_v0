@@ -118,6 +118,7 @@
 
         .input-box {
             margin-bottom: 20px;
+            width: 100%;
         }
 
         .input-row {
@@ -152,7 +153,6 @@
         .two-columns {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
             gap: 20px;
         }
 
