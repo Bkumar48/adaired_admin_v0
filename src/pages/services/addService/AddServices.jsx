@@ -8,25 +8,36 @@ import FormInput from "../../../components/FormInput/FormInput";
 // ===================================================================== Dynamic Points Input Component ====================================================================
 // =========================================================================================================================================================================
 
-const DynamicPointsInput = React.memo(() => {
+const DynamicPointsInput = React.memo(({ onChange }) => {
   const [points, setPoints] = useState([""]);
-  console.log("DynamicPointsInput Rendered", points);
 
   const handleAddPoint = useCallback(() => {
-    setPoints([...points, ""]);
-  }, [points]);
-
-  const handleDeletePoint = useCallback((index) => {
-    setPoints((prevPoints) => prevPoints.filter((_, i) => i !== index));
-  }, []);
-
-  const handleInputBlur = useCallback((index, value) => {
     setPoints((prevPoints) => {
-      const newPoints = [...prevPoints];
-      newPoints[index] = value;
+      const newPoints = [...prevPoints, ""];
+      onChange(newPoints);
       return newPoints;
     });
-  }, []);
+  }, [onChange]);
+
+  const handleDeletePoint = useCallback((index) => {
+    setPoints((prevPoints) => {
+      const newPoints = prevPoints.filter((_, i) => i !== index);
+      onChange(newPoints);
+      return newPoints;
+    });
+  }, [onChange]);
+
+  const handleInputBlur = useCallback(
+    (index, value) => {
+      setPoints((prevPoints) => {
+        const newPoints = [...prevPoints];
+        newPoints[index] = value;
+        onChange(newPoints);
+        return newPoints;
+      });
+    },
+    [onChange]
+  );
 
   return (
     <>
@@ -226,7 +237,9 @@ const InputComponents = {
   ),
   dynamicPointsInput: (props) => (
     <>
-      <DynamicPointsInput setValue={props.setValue} />
+      <DynamicPointsInput
+        onChange={(value) => props.setValue(props.name, value)}
+      />
       {props.errors[props.name] && (
         <p className="error-message">{props.errors[props.name]}</p>
       )}
