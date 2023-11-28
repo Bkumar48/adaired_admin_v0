@@ -165,29 +165,19 @@
     ]
   },
   {
-    "to":"services",
+    "to":"main-services",
     "icon":"fa-solid fa-bag-shopping",
-    "title":"Services",
+    "title":"Main Service Pages",
     "sub":[
       {
-        "to":"all-services",
+        "to":"all-main-services",
         "icon":"fa-solid fa-house",
-        "title":"All Services"
+        "title":"All Main Services"
       },
       {
-        "to":"add-service",
+        "to":"add-main-service",
         "icon":"fa-solid fa-house",
-        "title":"Add Service"
-      },
-      {
-        "to":"all-service-categories",
-        "icon":"fa-solid fa-house",
-        "title":"All Service Categories"
-      },
-      {
-        "to":"add-service-category",
-        "icon":"fa-solid fa-house",
-        "title":"Add Service Category"
+        "title":"Add New Main Service"
       }
     ]
   },

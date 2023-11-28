@@ -1,22 +1,30 @@
-// Package imports
-import { useState, useEffect, lazy, Suspense, startTransition } from "react";
+import React, {
+  useState,
+  useEffect,
+  lazy,
+  Suspense,
+  useCallback,
+  useMemo,
+} from "react";
 import axios from "axios";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
-// Components Imports
 const Table = lazy(() => import("../../components/table/Table"));
 const Cards = lazy(() => import("../../components/card/Cards"));
-const FilterTableCard = lazy(() =>
-  import("../../components/filterTableCard/FilterTableCard")
+const Loader = lazy(() => import("../../components/loader/Loader"));
+const { default: FilterTableCard } = await import(
+  "../../components/filterTableCard/FilterTableCard"
 );
 
-// Table Header Data
 const TableHead = ["No.", "Customer", "Phone", "Role", "Actions"];
 
-// renderHead function
+// Set default headers for axios
+axios.defaults.headers.common[
+  "Authorization"
+] = `Bearer ${sessionStorage.getItem("token")}`;
+
 const renderHead = (item, index) => <th key={index}>{item}</th>;
 
-// renderBody function
 const renderBody = (item, index, items) => {
   const calculateIndex = items.indexOf(item) + 1;
   return (
@@ -25,9 +33,7 @@ const renderBody = (item, index, items) => {
       <td className="customer_cell">
         <i className="fa-solid fa-user-tie"></i>
         <div>
-          <p className="customer_name">
-            {item.firstName + " " + item.lastName}
-          </p>
+          <p className="customer_name">{`${item.firstName} ${item.lastName}`}</p>
           <p className="customer_email">{item.email}</p>
         </div>
       </td>
@@ -42,7 +48,6 @@ const renderBody = (item, index, items) => {
           >
             <i className="fa-solid fa-pencil"></i>
           </button>
-
           <button
             className="action__btn-item"
             href="#"
@@ -50,7 +55,6 @@ const renderBody = (item, index, items) => {
           >
             <i className="fa-solid fa-eye"></i>
           </button>
-
           <button
             className="action__btn-item"
             href="#"
@@ -65,124 +69,101 @@ const renderBody = (item, index, items) => {
 };
 
 const AllUsers = () => {
-  // State variables
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchInputs, setSearchInputs] = useState([]);
-  const [filterValues, setFilterValues] = useState({});
   const [filterCardVisible, setFilterCardVisible] = useState(false);
 
+  const fetchData = useCallback(async () => {
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/api/v1/user/all-users`
+      );
 
-  // Handle search change
-  const handleSearchChange = (filterObject) => {
-    // Filter the users.data array based on the searchInputs object
-    const filteredData = users.data.filter((item) => {
-      return Object.keys(filterObject).every((key) => {
-        return String(item[key])
-          .toLowerCase()
-          .includes(filterObject[key].toLowerCase());
-      });
-    });
+      setUsers(res.data);
+      setFilteredUsers(res.data);
 
-    // Update the filteredUsers state with the filteredData
-    setFilteredUsers({ data: filteredData });
-
-    setFilterValues(filterObject);
-    setFilterCardVisible(true);
-  };
+      // Initialize searchInputs when users.data is available
+      const inputs = res.data?.data[0] || {};
+      const KeysToIgnore = [
+        "updatedAt",
+        "createdAt",
+        "__v",
+        "_id",
+        "refreshToken",
+        "roleType",
+      ];
+      const filteredKeys = Object.keys(inputs).filter(
+        (key) => !KeysToIgnore.includes(key)
+      );
+      setSearchInputs(filteredKeys);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    startTransition(() => {
-      setLoading(true);
-      setUsers([]);
-    });
-
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/v1/user/all-users`,
-          {
-            headers: {
-              Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}`,
-            },
-          }
-        );
-
-        startTransition(() => {
-          setUsers(res.data);
-          setFilteredUsers(res.data);
-          setLoading(false);
-
-          // Initialize searchInputs here when users.data is available
-          const inputs = res.data?.data[0] || {};
-          const KeysToIgnore = [
-            "updatedAt",
-            "createdAt",
-            "__v",
-            "_id",
-            "refreshToken",
-            "roleType",
-          ];
-          const filteredKeys = Object.keys(inputs).filter(
-            (key) => !KeysToIgnore.includes(key)
-          );
-          setSearchInputs(filteredKeys);
-        });
-      } catch (error) {
-        throw new Error(error);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [fetchData]);
+
+  const handleSearchChange = (filterObject) => {
+    const filteredData = users.data.filter((item) =>
+      Object.keys(filterObject).every((key) =>
+        String(item[key])
+          .toLowerCase()
+          .includes(filterObject[key].toLowerCase())
+      )
+    );
+
+    setFilteredUsers({ data: filteredData });
+    setFilterCardVisible(true);
+  };
 
   const toggleFilterPopup = () => {
     setFilterCardVisible(!filterCardVisible);
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   return (
-    <div>
-      <div className="row">
-        <div className="col-12">
-          {filterCardVisible && (
-            <motion.div
-              initial={{ y: -100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -100, opacity: 0 }}
-            >
-              <FilterTableCard
-                TableHead={searchInputs}
-                onClose={toggleFilterPopup}
-                handleSearchChange={handleSearchChange}
-              />
-            </motion.div>
-          )}
-
-          <Cards
-            header={"All Users"}
-            addnew={"/add-user"}
-            addnewText={"Add New User"}
-            search={true}
-            toggleFilterPopup={toggleFilterPopup}
+    <div className="row">
+      <div className="col-12">
+        {filterCardVisible && (
+          <motion.div
+            initial={{ y: -100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -100, opacity: 0 }}
           >
-            <Suspense fallback={<div>Loading...</div>}>
-              <Table
-                limit="10"
-                headData={TableHead}
-                renderHead={(item, index) => renderHead(item, index)}
-                bodyData={filteredUsers.data}
-                renderBody={(item, index) =>
-                  renderBody(item, index, users.data)
-                }
-              />
-            </Suspense>
-          </Cards>
-        </div>
+            <FilterTableCard
+              TableHead={searchInputs}
+              onClose={toggleFilterPopup}
+              handleSearchChange={handleSearchChange}
+            />
+          </motion.div>
+        )}
+
+        <Cards
+          header={"All Users"}
+          addnew={"/add-user"}
+          addnewText={"Add New User"}
+          search={true}
+          toggleFilterPopup={toggleFilterPopup}
+        >
+          <Suspense fallback={<Loader />}>
+            <Table
+              limit="10"
+              headData={TableHead}
+              renderHead={(item, index) => renderHead(item, index)}
+              bodyData={filteredUsers.data}
+              renderBody={(item, index) => renderBody(item, index, users.data)}
+            />
+          </Suspense>
+        </Cards>
       </div>
     </div>
   );

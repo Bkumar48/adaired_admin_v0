@@ -1,13 +1,16 @@
 /* Globals CSS */
 @import './Stylesheets/Globals.css';
 
+/* Loader File Css */
+@import './components/loader/Loader.css';
+
 /* ========================================================================== Pages CSS ========================================================================== */
 
 /* ---------- Login/Signup Pages ---------- */
 @import './pages/login_signup/LoginSignup.css';
 
 /* ---------- Service Pages ---------- */
-@import './pages/services/addService/AddService.css';
+@import './pages/main_service_pages/addMainService/AddMainService.css';
 
 button {
   cursor: pointer;

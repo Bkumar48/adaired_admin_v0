@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy, useState, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 
-
 // Higher-order component for lazy loading
 const lazyComponent = (importStatement) => lazy(() => import(importStatement));
 
@@ -28,7 +27,13 @@ const AllTestimonials = lazyComponent("../pages/testimonials/AllTestimonials");
 const AllFaqs = lazyComponent("../pages/faqs/AllFaqs");
 const AllFaqCategories = lazyComponent("../pages/faqs/AllFaqCategories");
 const LoginSignup = lazyComponent("../pages/login_signup/LoginSignup");
-const AddServices = lazyComponent("../pages/services/addService/AddServices");
+const AllMainServices = lazyComponent(
+  "../pages/main_service_pages/allMainServices/AllMainServices"
+);
+const AddMainServices = lazyComponent(
+  "../pages/main_service_pages/addMainService/AddMainServices"
+);
+const Loader = lazyComponent("../components/loader/Loader");
 
 const Layout = () => {
   const [loading, setLoading] = useState(true);
@@ -51,7 +56,7 @@ const Layout = () => {
 
   // Wait until the session storage check is complete
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   // Handle errors
@@ -67,7 +72,7 @@ const Layout = () => {
           <div className="layout__content">
             <TopNav setIsUserLoggedIn={setIsUserLoggedIn} />
             <div className="layout__content-main">
-              <Suspense fallback={<div>Loading...</div>}>
+              <Suspense fallback={<Loader />}>
                 <Routes>
                   <Route index element={<Dashboard />} />
                   {dashboardRoutes.map((route, index) => (
@@ -114,5 +119,6 @@ const dashboardRoutes = [
   { path: "all-testimonials", element: <AllTestimonials /> },
   { path: "all-faqs", element: <AllFaqs /> },
   { path: "all-faq-categories", element: <AllFaqCategories /> },
-  { path: "add-service", element: <AddServices />}
+  { path: "add-main-service", element: <AddMainServices /> },
+  { path: "all-main-services", element: <AllMainServices /> },
 ];
