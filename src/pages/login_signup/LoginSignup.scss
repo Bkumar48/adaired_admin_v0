@@ -1,0 +1,276 @@
+// Global styles
+$font-stack: "Nunito Sans",
+sans-serif;
+
+$form-styles : (
+    'font-family': $font-stack,
+);
+
+// Main container
+.login__signup-wrapper {
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    background-color: #ff8c6b;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    // Container styles
+    .login__signup-container {
+        position: relative;
+        width: 100%;
+        max-width: 1600px;
+        height: 900px;
+        background: #fff;
+        border-radius: 3.3rem;
+        box-shadow: 0 60px 40px -30px rgba(0, 0, 0, 0.27);
+
+        // Inner box styles
+        .login__signup-innerbox {
+            position: absolute;
+            width: calc(100% - 4.1rem);
+            height: calc(100% - 4.1rem);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+
+            // Forms wrap styles
+            .login__signup-forms-wrap {
+                position: absolute;
+                width: 50%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                display: grid;
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr;
+                transition: all 0.8s ease-in-out;
+
+                // Form styles
+                form {
+                    max-width: 600px;
+                    width: 100%;
+                    margin: 0 auto;
+                    height: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-evenly;
+                    grid-column: 1 / 2;
+                    grid-row: 1 / 2;
+                    transition: opacity 0.02s 0.4s;
+
+                    // Heading styles
+                    .heading {
+                        h2 {
+                            font-family: "DM Serif Display", serif;
+                            font-weight: 400;
+                            font-size: 2.375rem;
+                            position: relative;
+                            margin-bottom: 0.938rem;
+
+                            &::after {
+                                position: absolute;
+                                content: "";
+                                width: 7.5rem;
+                                height: 0.063rem;
+                                background: #D9D9D9;
+                                bottom: 0;
+                                left: 0;
+                                margin-top: 0.438rem;
+                            }
+                        }
+
+                        h6 {
+                            font-size: 1.125rem;
+                            font-weight: 400;
+                            font-family: $font-stack;
+                            color: #515151;
+                        }
+                    }
+
+                    // Actual form styles
+                    .actual-form {
+                        margin-top: 1.875rem;
+
+                        // Input styles
+                        .input-wrap {
+                            position: relative;
+                            margin-bottom: 1.5rem;
+
+                            input {
+                                height: 3.125rem;
+                                background: #F2F2F2;
+                                outline: none;
+                                border: none;
+                                border-radius: 0.425rem;
+                                width: 100%;
+                                padding: 0 1rem;
+                                font-family: $font-stack;
+
+                                &[type="tel"] {
+                                    padding-left: 3rem;
+                                }
+                            }
+                        }
+                    }
+
+                    // Additional styles
+                    .forgot_password {
+                        text-align: right;
+                        font-size: 0.875rem;
+                        cursor: pointer;
+                        padding: 0;
+                        margin: 0;
+                        font-family: $font-stack;
+                    }
+
+                    .login__signup-btn {
+                        width: 100%;
+                        margin-top: 1.25rem;
+                        text-align: center !important;
+                        font-family: $font-stack;
+                    }
+
+                    .login__signup-break {
+                        p {
+                            position: relative;
+                            text-align: center;
+                            font-family: $font-stack;
+
+                            &::after,
+                            &::before {
+                                content: "";
+                                position: absolute;
+                                width: 12.5rem;
+                                height: 1px;
+                                background: #D9D9D9;
+                                top: 50%;
+                                transform: translateY(-50%);
+                            }
+
+                            &::before {
+                                left: 0;
+                            }
+
+                            &::after {
+                                right: 0;
+                            }
+                        }
+                    }
+
+                    .api-signin {
+                        background: #F7F7F7;
+                        height: 3.125rem;
+                        width: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        gap: 1.25rem;
+                        border-radius: 0.425rem;
+                        border: none;
+                        font-family: $font-stack;
+                        font-size: 1rem;
+                        cursor: pointer;
+                    }
+
+                    .switch_form {
+                        text-align: center;
+                        font-size: 0.875rem;
+                        cursor: pointer;
+                        padding: 0;
+                        margin: 0;
+                        font-family: $font-stack;
+                    }
+                }
+
+                // Sign-up form styles
+                form.sign-up-form {
+                    opacity: 0;
+                    pointer-events: none;
+                }
+            }
+
+            // Carousel styles
+            .login__signup-carousel {
+                position: absolute;
+                height: 100%;
+                width: 50%;
+                left: 50%;
+                top: 0;
+                border-radius: 2rem;
+                display: grid;
+                grid-template-rows: auto 1fr;
+                padding-bottom: 2rem;
+                overflow: hidden;
+                transition: 0.8s ease-in-out;
+
+                // Sign-up mode styles
+                .login__signup-wrapper.sign-up-mode & {
+                    left: 0;
+                    background-color: red;
+                }
+            }
+        }
+    }
+
+    // Sign-up mode styles
+    &.sign-up-mode {
+        .login__signup-forms-wrap {
+            left: 50% !important;
+
+            form.sign-in-form {
+                opacity: 0;
+                pointer-events: none;
+            }
+
+            form.sign-up-form {
+                opacity: 1 !important;
+                pointer-events: all !important;
+            }
+        }
+
+        .login__signup-carousel {
+            left: 0 !important;
+        }
+    }
+}
+
+// Button styles
+.defbtn {
+    border-radius: 100px;
+    border: 1px solid #A7A9AC;
+    padding: 18px 80px 18px 20px;
+    color: #000;
+    display: inline-block;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 17px;
+    text-transform: capitalize;
+    background-color: #ffff;
+    text-align: left;
+    position: relative;
+
+    &::after {
+        position: absolute;
+        content: "→";
+        font-size: 1.5rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Font Awesome 5 Free";
+        color: rgb(var(--gray-0));
+        background-color: #000;
+        width: 40px;
+        height: 40px;
+        top: 0;
+        right: 7px;
+        bottom: 0;
+        margin: auto;
+        border-radius: 50px;
+        transition: .6s all ease-in-out;
+        pointer-events: none;
+    }
+}

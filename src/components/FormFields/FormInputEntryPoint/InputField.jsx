@@ -3,7 +3,6 @@ import "react-phone-input-2/lib/style.css";
 
 const JoditEditor = lazy(() => import("jodit-react"));
 const PhoneInput = lazy(() => import("react-phone-input-2"));
-import { useForm, Controller } from "react-hook-form";
 
 const InputField = React.memo((props) => {
   if (props.inputComponent === "forminput") {
@@ -12,7 +11,7 @@ const InputField = React.memo((props) => {
         <PhoneInput
           country={"in"}
           value={props.value}
-          onChange={props.onChange}
+          onBlur={props.onBlur}
           inputProps={{
             id: props.id,
             required: props.required,
@@ -20,7 +19,7 @@ const InputField = React.memo((props) => {
             className: props.className,
             placeholder: props.placeholder,
             onFocus: props.onFocus,
-            onBlur: props.onBlur,
+            // onBlur: props.onBlur,
             name: props.name,
           }}
         />
@@ -66,7 +65,7 @@ const InputField = React.memo((props) => {
     return (
       <JoditEditor
         value={props.field?.value}
-        onBlur={props.onBlur}
+        onBlur={(value) => props.setValue(props.name, value)}
         onChange={props.onChange}
         config={props.config}
         tabIndex={props.tabIndex}
@@ -77,99 +76,107 @@ const InputField = React.memo((props) => {
     const [file, setFile] = useState(null);
     const [dragOver, setDragOver] = useState(false);
     const [errorNotification, setErrorNotification] = useState(null);
-
-    const handleDrag = useCallback((e, isOver) => {
-      e.preventDefault();
-      setDragOver(isOver);
-    }, []);
-
-    const handleDrop = useCallback(
-      (e) => {
-        e.preventDefault();
-        handleDrag(e, false);
-        const droppedFile = e.dataTransfer.files[0];
-        handleFile(droppedFile);
-      },
-      [handleDrag]
-    );
-
-    const handleAddImage = useCallback((e) => {
-      e.preventDefault();
-      const addedFile = e.target.files[0];
-      handleFile(addedFile);
-    }, []);
-
+    const [imageSrc, setImageSrc] = useState(null);
+    const [isConfirmed, setIsConfirmed] = useState(false);
     const handleFile = useCallback((file) => {
-      const fileType = file?.type?.split("/")[0];
-      if (!file || !fileType.includes("image")) {
+      const isImage = /^image\//.test(file?.type);
+      if (!file || !isImage) {
         setFile(null);
-        setErrorNotification("Not an image File");
+        setImageSrc(null);
+        setErrorNotification("Not an image file");
         setTimeout(() => setErrorNotification(null), 3000);
         return;
       }
 
       setFile(file);
-      props.onFileChange(file); // Notify the parent component about the new file
+      props.setValue(props.name, file);
+
+      // Read the image file and set it as the source of the img element
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImageSrc(reader.result);
+      };
+      reader.readAsDataURL(file);
     }, []);
 
-    const handleUploadImage = useCallback(
+    const handleFileDrop = useCallback(
       (e) => {
         e.preventDefault();
-        if (file) {
-          alert("Uploading Image " + file.name);
+        const isOver = e.type === "dragenter";
+        setDragOver(isOver);
+
+        if (isOver || e.type === "drop") {
+          const droppedFile =
+            e.type === "drop" ? e.dataTransfer.files[0] : null;
+          handleFile(droppedFile);
         }
       },
-      [file]
+      [handleFile]
     );
 
     const handleCancelUpload = useCallback(() => {
       setFile(null);
+      setImageSrc(null);
+      setIsConfirmed(false);
     }, []);
 
+    const handleConfirmUpload = useCallback(
+      (e) => {
+        e.preventDefault();
+        setIsConfirmed(true);
+      },
+      [file]
+    );
+
+    const uploadText =
+      file && !isConfirmed ? (
+        [
+          <h4 key="fileName">{file.name}</h4>,
+          <button
+            key="cancel"
+            className="cancel-upload-button btn btn-warning"
+            onClick={handleCancelUpload}
+          >
+            Cancel
+          </button>,
+          <button
+            key="upload"
+            className="upload-button btn btn-primary"
+            onClick={handleConfirmUpload}
+          >
+            Confirm
+          </button>,
+        ]
+      ) : file ? (
+        <div>
+          <h4>{file.name}</h4>
+          <button
+            className="cancel-upload-button btn btn-warning"
+            onClick={handleCancelUpload}
+          >
+            Remove File
+          </button>
+        </div>
+      ) : (
+        <h4>Choose Files to Upload</h4>
+      );
+
+    const errorNotificationElement = errorNotification ? (
+      <div className="error-notification">
+        <p>{errorNotification}</p>
+      </div>
+    ) : null;
+
     const dragOverClass = dragOver ? "display-box drag-over" : "display-box";
-
-    const uploadText = useMemo(
-      () =>
-        file ? (
-          <div>
-            <h4>{file.name}</h4>
-            <button
-              className="cancel-upload-button btn btn-warning"
-              onClick={handleCancelUpload}
-            >
-              Cancel
-            </button>
-            <button
-              className="upload-button btn btn-primary"
-              onClick={handleUploadImage}
-            >
-              Upload
-            </button>
-          </div>
-        ) : (
-          <div>
-            <h4>Choose Files to Upload</h4>
-          </div>
-        ),
-      [file, handleCancelUpload, handleUploadImage]
-    );
-
-    const errorNotificationElement = useMemo(
-      () =>
-        errorNotification ? (
-          <div className="error-notification">
-            <p>{errorNotification}</p>
-          </div>
-        ) : null,
-      [errorNotification]
-    );
 
     return (
       <div>
         <div
           className={dragOverClass}
-          onDragEnter={(e) => handleDrag(e, true)}
-          onDragLeave={(e) => handleDrag(e, false)}
+          onDragOver={handleFileDrop}
+          onDragEnter={handleFileDrop}
+          onDragLeave={handleFileDrop}
+          onDrop={handleFileDrop}
         >
           <div className="icon-text-box">
             <div className="upload-icon">
@@ -184,8 +191,8 @@ const InputField = React.memo((props) => {
               id="upload-image-input"
               className="upload-image-input"
               accept="image/*"
-              onDrop={handleDrop}
-              onChange={handleAddImage}
+              onDrop={handleFileDrop}
+              onChange={(e) => handleFile(e.target.files[0])}
             />
           </div>
         </div>
@@ -197,30 +204,33 @@ const InputField = React.memo((props) => {
     const handleAddPoint = useCallback(() => {
       setPoints((prevPoints) => {
         const newPoints = [...prevPoints, ""];
-        props.onChange(newPoints);
+        props.setValue(props.name, newPoints);
         return newPoints;
       });
-    }, [props.onChange]);
+    }, [props.name, props.setValue]);
 
     const handleDeletePoint = useCallback(
       (index) => {
         setPoints((prevPoints) => {
           const newPoints = prevPoints.filter((_, i) => i !== index);
-          props.onChange(newPoints);
+
+          props.setValue(props.name, newPoints);
           return newPoints;
         });
       },
-      [props.onChange]
+      [props.name, props.setValue]
     );
 
     const handleInputBlur = useCallback(
-      (e, index) => {
-        const newPoints = [...points];
-        newPoints[index] = e.target.value;
-        setPoints(newPoints);
-        props.onChange(newPoints);
+      (index, value) => {
+        setPoints((prevPoints) => {
+          const newPoints = [...prevPoints];
+          newPoints[index] = value;
+          props.setValue(props.name, newPoints);
+          return newPoints;
+        });
       },
-      [points, props.onChange]
+      [props.name, props.setValue]
     );
 
     const renderPoints = useMemo(
@@ -255,8 +265,7 @@ const InputField = React.memo((props) => {
           className="dynamicPointsInput__btn dynamicPointsInput__add"
           onClick={handleAddPoint}
         >
-          <i className="fa fa-plus" aria-hidden="true" />
-          {" "}
+          <i className="fa fa-plus" aria-hidden="true" />{" "}
           {props.addButtonText ? props.addButtonText : "Add Point"}
         </button>
       </div>

@@ -9,6 +9,13 @@ const InputField = lazy(() =>
   import("../../../components/FormFields/FormInputEntryPoint/InputField")
 );
 
+// Set default headers for axios
+axios.defaults.headers.common = {
+  ...axios.defaults.headers.common,
+  "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+  "Content-Type": "multipart/form-data", 
+};
+
 const InputBox = React.memo((props) => {
   return (
     <div className="input-box">
@@ -40,9 +47,20 @@ const AddMainServices = () => {
   } = useForm();
 
   const handleFormSubmit = useCallback(
-    (data) => {
-      console.log(data);
-      reset();
+    async (data) => {
+      try {
+        setLoading(true);
+        setError(null);
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/v1/admin/main-services/`,
+          data
+        );
+        reset();
+      } catch (error) {
+        setError(`Something went wrong: ${error.message}`);
+      } finally {
+        setLoading(false);
+      }
     },
     [reset]
   );
