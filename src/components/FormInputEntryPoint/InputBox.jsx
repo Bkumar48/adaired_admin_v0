@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 const InputField = lazy(() => import("./InputField"));
-const Loader = lazy(() => import("../../loader/Loader"));
+const Loader = lazy(() => import("../loader/Loader"));
 import { Controller } from "react-hook-form";
 const InputBox = (props) => {
   return (

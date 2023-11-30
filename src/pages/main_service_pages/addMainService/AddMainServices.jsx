@@ -6,7 +6,7 @@ import { useForm, Controller } from "react-hook-form";
 const Loader = lazy(() => import("../../../components/loader/Loader"));
 const Cards = lazy(() => import("../../../components/card/Cards"));
 const InputField = lazy(() =>
-  import("../../../components/FormFields/FormInputEntryPoint/InputField")
+  import("../../../components/FormInputEntryPoint/InputField")
 );
 
 // Set default headers for axios

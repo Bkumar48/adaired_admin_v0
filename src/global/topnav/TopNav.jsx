@@ -5,6 +5,8 @@ import notification from "../../assets/jsonData/notification.json";
 import { Link, useNavigate } from "react-router-dom";
 
 const TopNav = React.memo(({ setIsUserLoggedIn }) => {
+
+  
   const curr_user = useMemo(
     () => ({
       display_name: "Bittu Kumar",

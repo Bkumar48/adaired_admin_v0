@@ -1,113 +1,49 @@
-import React, {
-  useState,
-  useEffect,
-  lazy,
-  Suspense,
-  useCallback,
-  useMemo,
-} from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 import axios from "axios";
+import { useQuery } from "react-query";
+import { queryClient } from "../../utils/QueryClient/queryClient";
 import { motion } from "framer-motion";
 
 const Table = lazy(() => import("../../components/table/Table"));
 const Cards = lazy(() => import("../../components/card/Cards"));
 const Loader = lazy(() => import("../../components/loader/Loader"));
-const { default: FilterTableCard } = await import(
-  "../../components/filterTableCard/FilterTableCard"
+const FilterTableCard = lazy(() =>
+  import("../../components/filterTableCard/FilterTableCard")
 );
 
 const TableHead = ["No.", "Customer", "Phone", "Role", "Actions"];
 
-// Set default headers for axios
-axios.defaults.headers.common[
-  "Authorization"
-] = `Bearer ${sessionStorage.getItem("token")}`;
+const token = sessionStorage.getItem("token");
+if (token) {
+  axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+}
 
-const renderHead = (item, index) => <th key={index}>{item}</th>;
-
-const renderBody = (item, index, items) => {
-  const calculateIndex = items.indexOf(item) + 1;
-  return (
-    <tr key={index}>
-      <td>{calculateIndex}</td>
-      <td className="customer_cell">
-        <i className="fa-solid fa-user-tie"></i>
-        <div>
-          <p className="customer_name">{`${item.firstName} ${item.lastName}`}</p>
-          <p className="customer_email">{item.email}</p>
-        </div>
-      </td>
-      <td>{item.mobile}</td>
-      <td>{item.roleType}</td>
-      <td>
-        <div className="action__btn-cell">
-          <button
-            className="action__btn-item"
-            href="#"
-            data-tooltip="Edit User"
-          >
-            <i className="fa-solid fa-pencil"></i>
-          </button>
-          <button
-            className="action__btn-item"
-            href="#"
-            data-tooltip="View User"
-          >
-            <i className="fa-solid fa-eye"></i>
-          </button>
-          <button
-            className="action__btn-item"
-            href="#"
-            data-tooltip="Delete User"
-          >
-            <i className="fa-solid fa-trash-can"></i>
-          </button>
-        </div>
-      </td>
-    </tr>
-  );
-};
+const fetchData = async () =>
+  (await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/user/all-users`))
+    .data;
 
 const AllUsers = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchInputs, setSearchInputs] = useState([]);
   const [filterCardVisible, setFilterCardVisible] = useState(false);
 
-  const fetchData = useCallback(async () => {
-    try {
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/v1/user/all-users`
-      );
-
-      setUsers(res.data);
-      setFilteredUsers(res.data);
-
-      // Initialize searchInputs when users.data is available
-      const inputs = res.data?.data[0] || {};
-      const KeysToIgnore = [
-        "updatedAt",
-        "createdAt",
-        "__v",
-        "_id",
-        "refreshToken",
-        "roleType",
-      ];
-      const filteredKeys = Object.keys(inputs).filter(
-        (key) => !KeysToIgnore.includes(key)
-      );
-      setSearchInputs(filteredKeys);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const { data: users, isLoading, error } = useQuery("allUsers", fetchData);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    const inputs = users?.data?.[0] || {};
+    setSearchInputs(
+      Object.keys(inputs).filter(
+        (key) =>
+          ![
+            "updatedAt",
+            "createdAt",
+            "__v",
+            "_id",
+            "refreshToken",
+            "roleType",
+          ].includes(key)
+      )
+    );
+  }, [users]);
 
   const handleSearchChange = (filterObject) => {
     const filteredData = users.data.filter((item) =>
@@ -117,18 +53,14 @@ const AllUsers = () => {
           .includes(filterObject[key].toLowerCase())
       )
     );
-
-    setFilteredUsers({ data: filteredData });
+    queryClient.setQueryData("allUsers", { data: filteredData });
     setFilterCardVisible(true);
   };
 
-  const toggleFilterPopup = () => {
-    setFilterCardVisible(!filterCardVisible);
-  };
+  const toggleFilterPopup = () => setFilterCardVisible(!filterCardVisible);
 
-  if (loading) {
-    return <Loader />;
-  }
+  if (isLoading) return <Loader />;
+  if (error) return <div>Error loading data</div>;
 
   return (
     <div className="row">
@@ -148,9 +80,9 @@ const AllUsers = () => {
         )}
 
         <Cards
-          header={"All Users"}
-          addnew={"/add-user"}
-          addnewText={"Add New User"}
+          header="All Users"
+          addnew="/add-user"
+          addnewText="Add New User"
           search={true}
           toggleFilterPopup={toggleFilterPopup}
         >
@@ -158,9 +90,48 @@ const AllUsers = () => {
             <Table
               limit="10"
               headData={TableHead}
-              renderHead={(item, index) => renderHead(item, index)}
-              bodyData={filteredUsers.data}
-              renderBody={(item, index) => renderBody(item, index, users.data)}
+              renderHead={(item, index) => <th key={index}>{item}</th>}
+              bodyData={users.data}
+              renderBody={(item, index) => (
+                <tr key={index}>
+                  <td>{index + 1}</td>
+                  <td className="customer_cell">
+                    <i className="fa-solid fa-user-tie"></i>
+                    <div>
+                      <p className="customer_name">{`${item.firstName} ${item.lastName}`}</p>
+                      <p className="customer_email">{item.email}</p>
+                    </div>
+                  </td>
+                  <td>{item.contact}</td>
+                  <td>{item.roleType}</td>
+                  <td>
+                    {" "}
+                    <div className="action__btn-cell">
+                      <button
+                        className="action__btn-item"
+                        href="#"
+                        data-tooltip="Edit User"
+                      >
+                        <i className="fa-solid fa-edit"></i>
+                      </button>
+                      <button
+                        className="action__btn-item"
+                        href="#"
+                        data-tooltip="View User"
+                      >
+                        <i className="fa-solid fa-eye"></i>
+                      </button>
+                      <button
+                        className="action__btn-item"
+                        href="#"
+                        data-tooltip="Delete User"
+                      >
+                        <i className="fa-solid fa-trash-can"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              )}
             />
           </Suspense>
         </Cards>

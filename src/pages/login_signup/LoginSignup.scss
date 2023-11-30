@@ -2,8 +2,7 @@
 $font-stack: "Nunito Sans",
 sans-serif;
 
-$form-styles : (
-    'font-family': $font-stack,
+$form-styles : ('font-family': $font-stack,
 );
 
 // Main container
@@ -59,7 +58,7 @@ $form-styles : (
                     justify-content: space-evenly;
                     grid-column: 1 / 2;
                     grid-row: 1 / 2;
-                    transition: opacity 0.02s 0.4s;
+                    transition: opacity 0.02s 0.4s !important;
 
                     // Heading styles
                     .heading {
@@ -184,12 +183,6 @@ $form-styles : (
                         font-family: $font-stack;
                     }
                 }
-
-                // Sign-up form styles
-                form.sign-up-form {
-                    opacity: 0;
-                    pointer-events: none;
-                }
             }
 
             // Carousel styles
@@ -218,23 +211,14 @@ $form-styles : (
     // Sign-up mode styles
     &.sign-up-mode {
         .login__signup-forms-wrap {
-            left: 50% !important;
-
-            form.sign-in-form {
-                opacity: 0;
-                pointer-events: none;
-            }
-
-            form.sign-up-form {
-                opacity: 1 !important;
-                pointer-events: all !important;
-            }
+            left: 50% !important;  
         }
 
         .login__signup-carousel {
             left: 0 !important;
         }
     }
+    
 }
 
 // Button styles
