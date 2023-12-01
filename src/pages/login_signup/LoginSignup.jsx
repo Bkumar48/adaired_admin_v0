@@ -100,6 +100,7 @@ const AuthForm = ({
               defaultValue=""
               className="full-width-input"
               onBlur={(e) => {
+                e.target.value = e.target.value.replace(/[^0-9+]/g, "");
                 setValue("contact", e.target.value);
               }}
             />
@@ -184,42 +185,43 @@ const LoginSignup = (props) => {
     isSignUpMode ? "sign-up" : "sign-in"
   );
 
-  // const signin = useMutation((userData) => {
-  //   axios.post(`${import.meta.env.VITE_API_URL}/api/v1/user/login`, userData),
-  //     {
-  //       onSuccess: (data) => {
-  //         const token = data.data.token;
-  //         props.setIsUserLoggedIn(true);
-  //         console.log(data);
-  //         sessionStorage.setItem("token", token);
-  //         navigate("/");
-  //       },
-  //       onError: (error) => {
-  //         console.log("Signin Error:", error.response.data.message);
-  //       },
-  //       onSettled: () => {
-  //         queryClient.invalidateQueries("userData");
-  //       },
-  //     };
-  // });
+  const signup = useMutation(
+    (userData) =>
+      axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/user/register`,
+        userData
+      ),
+    {
+      onSuccess: () => {
+        setIsSignUpMode(false);
+      },
+      onError: (error) => {
+        console.log("Signin Error:", error.response.data.message);
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries("userData");
+      },
+    }
+  );
 
-  const signin = useMutation((userData) =>
-  axios.post(`${import.meta.env.VITE_API_URL}/api/v1/user/login`, userData)
-, {
-  onSuccess: (data) => {
-    const token = data.data.token;
-    props.setIsUserLoggedIn(true);
-    sessionStorage.setItem("token", token);
-    navigate("/");
-  },
-  onError: (error) => {
-    console.log("Signin Error:", error.response.data.message);
-  },
-  onSettled: () => {
-    queryClient.invalidateQueries("userData");
-  },
-});
-
+  const signin = useMutation(
+    (userData) =>
+      axios.post(`${import.meta.env.VITE_API_URL}/api/v1/user/login`, userData),
+    {
+      onSuccess: (data) => {
+        const token = data.data.token;
+        props.setIsUserLoggedIn(true);
+        sessionStorage.setItem("token", token);
+        navigate("/");
+      },
+      onError: (error) => {
+        console.log("Signin Error:", error.response.data.message);
+      },
+      onSettled: () => {
+        queryClient.invalidateQueries("userData");
+      },
+    }
+  );
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -241,9 +243,27 @@ const LoginSignup = (props) => {
     [signin]
   );
 
-  const signUpHandleSubmit = useCallback((data) => {
-    console.log("Sign Up Data:", data);
-  }, []);
+  const signUpHandleSubmit = useCallback(
+    (data) => {
+      try {
+        const firstName =
+          data.name.split(" ").length > 1 ? data.name.split(" ")[0] : data.name;
+        const lastName =
+          data.name.split(" ").length > 1 ? data.name.split(" ")[1] : "";
+        const userData = {
+          firstName,
+          lastName,
+          email: data.email,
+          password: data.password,
+          contact: data.contact,
+        };
+        signup.mutate(userData);
+      } catch (error) {
+        console.error("Sign Up Error:", error.response.data.message);
+      }
+    },
+    [signup]
+  );
 
   const handleToggle = useCallback(() => {
     setIsSignUpMode((prevMode) => !prevMode);

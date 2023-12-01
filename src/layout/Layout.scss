@@ -1,0 +1,14 @@
+/* layout */
+
+.layout__content {
+    position: relative;
+    width: calc(100% - var(--sidebar-width));
+    height: 100vh;
+    left: var(--sidebar-width);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .layout__content-main {
+    padding: 30px 20px;
+  }
+  

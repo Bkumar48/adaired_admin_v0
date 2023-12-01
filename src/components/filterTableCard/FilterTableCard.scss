@@ -1,0 +1,99 @@
+/* *** *** *** *** Filter Table Card Starts *** *** *** *** */
+.filter__card {
+    margin-bottom: 1.5rem;
+  
+  }
+  
+  .filter__card-header-box {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .filter__card-header-box i {
+    height: 40px;
+    width: 40px;
+    font-size: 1.5rem;
+    background: rgb(var(--gray-100));
+    padding: 10px;
+    border-radius: 50%;
+    color: rgb(var(--gray-600));
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .filter__table-card-body {
+    padding: 20px;
+  }
+  
+  .filter__table-card-body form {
+  
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-gap: 20px;
+  }
+  
+  .filter__table-card-body form label {
+    display: block;
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  .filter__table-card-body form input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  
+  .filter__table-card-body form input:focus {
+    border-color: rgb(var(--gray-600));
+  }
+  
+  .filter__table-card-body form select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  
+  .filter__table-card-body form select:focus {
+    border-color: rgb(var(--gray-600));
+  }
+  
+  .form-btn {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-top: 20px;
+  }
+  
+  .form-btn button {
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background-color: rgb(var(--gray-200));
+    color: rgb(var(--gray-600));
+    transition: all 0.3s ease;
+    width: 100px;
+  }
+  
+  .form-btn button:hover {
+    background-color: rgb(var(--gray-1000));
+    color: rgb(var(--gray-0));
+  }
+  
+  /* *** *** *** *** Filter Table Card Ends *** *** *** *** */
+  

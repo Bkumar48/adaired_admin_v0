@@ -56,14 +56,28 @@
     --green-dark: 3 112 60;
 }
 
+a {
+    text-decoration: none;
+    color: unset;
+}
+
+button {
+    cursor: pointer;
+}
+
 /* ================================================================== Inputs and Labels starts =================================================================== */
 
 input,
-textarea {
+textarea,
+select {
     padding: 1rem 0.5rem;
     outline: none;
     border: 1px solid rgb(var(--gray-300));
     border-radius: 5px;
+}
+
+input[type=tel] {
+    padding-left: 3rem;
 }
 
 label {
@@ -89,9 +103,11 @@ label {
     width: 25%;
 }
 
+
+
 /* ======================================================================= Inputs and Labels ends =============================================================== */
 
-/* Grids */
+/* ============================================================================= Grids ========================================================================== */
 .row {
     display: flex;
     flex-wrap: wrap;
@@ -148,4 +164,35 @@ label {
 
 .col-12 {
     width: 100%;
+}
+
+/* =========================================================================== Forms Globals ===================================================================== */
+.form {
+    padding: 20px;
+}
+
+.input-box {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.form__button {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+
+    .btn {
+        margin-left: 10px;
+        padding: 15px 30px;
+    }
+
+    .btn__cancel {
+        background-color: rgb(var(--gray-300));
+        color: rgb(var(--gray-700));
+    }
+
+    .btn__submit {
+        background-color: rgb(var(--primary-default));
+        color: #fff;
+    }
 }

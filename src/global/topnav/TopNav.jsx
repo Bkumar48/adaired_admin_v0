@@ -1,21 +1,47 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { useQuery } from "react-query";
+import { jwtDecode } from "jwt-decode";
+import Loader from "../../components/loader/Loader";
 import Dropdown from "./topnav_components/Dropdown";
 import user_menu from "../../assets/jsonData/user_menu.json";
 import notification from "../../assets/jsonData/notification.json";
-import { Link, useNavigate } from "react-router-dom";
 
 const TopNav = React.memo(({ setIsUserLoggedIn }) => {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+  const token = sessionStorage.getItem("token");
 
-  
-  const curr_user = useMemo(
-    () => ({
-      display_name: "Bittu Kumar",
-      image: "/assets/images/avatar-15.webp",
-    }),
-    []
+  if (token) axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+  const userId = jwtDecode(token)?.user_id;
+
+  const {
+    data: userData,
+    isLoading,
+    error,
+  } = useQuery(
+    "userData",
+    () =>
+      axios
+        .get(
+          `${
+            import.meta.env.VITE_API_URL
+          }/api/v1/user/getUser/?userId=${userId}`
+        )
+        .then(({ data }) => data),
+    { enabled: !!userId }
   );
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    if (userData) {
+      setUser({
+        display_name: `${userData.data?.firstName} ${userData.data?.lastName}`,
+        image: "/assets/images/avatar-15.webp",
+      });
+    }
+  }, [userData]);
 
   const handleLogout = useCallback(() => {
     sessionStorage.removeItem("token");
@@ -23,47 +49,41 @@ const TopNav = React.memo(({ setIsUserLoggedIn }) => {
     navigate("/");
   }, [setIsUserLoggedIn, navigate]);
 
-  const renderNotificationItem = useCallback(
-    (item, index) => (
-      <div className="notification-item" key={index}>
-        <i className={item.icon}></i>
-        <span>{item.content}</span>
-      </div>
-    ),
-    []
+  if (isLoading) return <Loader />;
+  if (error) return <div>Error loading user data</div>;
+  if (!user) return null;
+
+  const renderNotificationItem = (item, index) => (
+    <div className="notification-item" key={index}>
+      <i className={item.icon}></i>
+      <span>{item.content}</span>
+    </div>
   );
 
-  const renderUserToggle = useCallback(
-    () => (
-      <div className="topnav__right-user">
-        <div className="topnav__right-user__image">
-          <img src={curr_user.image} alt="" />
-        </div>
-        <div className="topnav__right-user__name">{curr_user.display_name}</div>
+  const renderUserToggle = () => (
+    <div className="topnav__right-user">
+      <div className="topnav__right-user__image">
+        <img src={user?.image} alt="" />
       </div>
-    ),
-    [curr_user]
+      <div className="topnav__right-user__name">{user?.display_name}</div>
+    </div>
   );
 
-  const renderUserMenu = useCallback(
-    (item, index) => (
-      <>
-        {item.content === "Logout" ? (
-          <div className="notification-item" key={index} onClick={handleLogout}>
-            <i className={item.icon}></i>
-            <span>{item.content}</span>
-          </div>
-        ) : (
-          <Link to={item.to} key={index}>
-            <div className="notification-item">
-              <i className={item.icon}></i>
-              <span>{item.content}</span>
-            </div>
-          </Link>
-        )}
-      </>
-    ),
-    [handleLogout]
+  const renderUserMenu = (item, index) => (
+    <div
+      className="notification-item"
+      key={index}
+      onClick={() => item.content === "Logout" && handleLogout()}
+    >
+      {item.content === "Logout" ? (
+        <i className={item.icon} onClick={handleLogout}></i>
+      ) : (
+        <Link to={item.to}>
+          <i className={item.icon}></i>
+          <span>{item.content}</span>
+        </Link>
+      )}
+    </div>
   );
 
   return (
@@ -91,7 +111,6 @@ const TopNav = React.memo(({ setIsUserLoggedIn }) => {
   );
 });
 
-// Set displayName for the memoized component
 TopNav.displayName = "TopNav";
 
 export default TopNav;

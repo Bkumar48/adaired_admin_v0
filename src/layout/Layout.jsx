@@ -1,7 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy, useState, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-
 // Higher-order component for lazy loading
 const lazyComponent = (importStatement) => lazy(() => import(importStatement));
 
@@ -10,8 +9,9 @@ const NotLoggedIn = lazyComponent("../components/404_notLoggedin/NotLoggedIn");
 const Sidebar = lazyComponent("../global/sidebar/Sidebar");
 const TopNav = lazyComponent("../global/topnav/TopNav");
 const Dashboard = lazyComponent("../pages/dashboard/Dashboard");
-const AddUser = lazyComponent("../pages/users/AddUser");
-const AllUsers = lazyComponent("../pages/users/AllUsers");
+const AddUser = lazyComponent("../pages/users/addUser/AddUser");
+const EditUser = lazyComponent("../pages/users/editUser/EditUser");
+const AllUsers = lazyComponent("../pages/users/allUsers/AllUsers");
 const AllProducts = lazyComponent("../pages/products/AllProducts");
 const AllCoupons = lazyComponent("../pages/coupons/AllCoupons");
 const AllRoles = lazyComponent("../pages/roles/AllRoles");
@@ -107,6 +107,7 @@ export default Layout;
 const dashboardRoutes = [
   { path: "all-users", element: <AllUsers /> },
   { path: "add-user", element: <AddUser /> },
+  { path: "edit-user", element: <EditUser />},
   { path: "all-roles", element: <AllRoles /> },
   { path: "all-products", element: <AllProducts /> },
   { path: "all-product-categories", element: <AllProductCategories /> },
