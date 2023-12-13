@@ -27,11 +27,11 @@ const AllTestimonials = lazyComponent("../pages/testimonials/AllTestimonials");
 const AllFaqs = lazyComponent("../pages/faqs/AllFaqs");
 const AllFaqCategories = lazyComponent("../pages/faqs/AllFaqCategories");
 const LoginSignup = lazyComponent("../pages/login_signup/LoginSignup");
-const AllMainServices = lazyComponent(
-  "../pages/main_service_pages/allMainServices/AllMainServices"
+const AllServices = lazyComponent(
+  "../pages/servicePages/allServices/AllServices"
 );
-const AddMainServices = lazyComponent(
-  "../pages/main_service_pages/addMainService/AddMainServices"
+const AddServices = lazyComponent(
+  "../pages/servicePages/addService/AddServices"
 );
 const Loader = lazyComponent("../components/loader/Loader");
 
@@ -120,6 +120,6 @@ const dashboardRoutes = [
   { path: "all-testimonials", element: <AllTestimonials /> },
   { path: "all-faqs", element: <AllFaqs /> },
   { path: "all-faq-categories", element: <AllFaqCategories /> },
-  { path: "add-main-service", element: <AddMainServices /> },
-  { path: "all-main-services", element: <AllMainServices /> },
+  { path: "add-service", element: <AddServices /> },
+  { path: "all-services", element: <AllServices /> },
 ];

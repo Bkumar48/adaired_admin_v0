@@ -12,8 +12,8 @@ const InputField = lazy(() =>
 // Set default headers for axios
 axios.defaults.headers.common = {
   ...axios.defaults.headers.common,
-  "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
-  "Content-Type": "multipart/form-data", 
+  Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+  "Content-Type": "multipart/form-data",
 };
 
 const InputBox = React.memo((props) => {
@@ -34,7 +34,7 @@ const InputBox = React.memo((props) => {
   );
 });
 
-const AddMainServices = () => {
+const AddServices = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -75,6 +75,21 @@ const AddMainServices = () => {
             onSubmit={handleSubmit(handleFormSubmit)}
             encType="multipart/form-data"
           >
+            <InputBox
+            htmlFor="isChildService"
+            label="Is Child Service"
+            name="isChildService"
+            control={control}
+            placeholder="Is Child Service"
+            type="checkbox"
+            setValue={setValue}
+            inputComponent="forminput"
+            id="isChildService"
+            errors={errors}
+            defaultValue=""
+            // className="full-width-input"
+          />
+
             <InputBox
               htmlFor="serviceTitle"
               label="Service Title"
@@ -375,6 +390,6 @@ const AddMainServices = () => {
 };
 
 InputBox.displayName = "InputBox";
-AddMainServices.displayName = "AddMainServices";
+AddServices.displayName = "AddMainServices";
 
-export default AddMainServices;
+export default AddServices;

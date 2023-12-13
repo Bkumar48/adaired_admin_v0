@@ -167,17 +167,17 @@
   {
     "to":"main-services",
     "icon":"fa-solid fa-bag-shopping",
-    "title":"Main Service Pages",
+    "title":"Service Pages",
     "sub":[
       {
-        "to":"all-main-services",
+        "to":"all-services",
         "icon":"fa-solid fa-house",
-        "title":"All Main Services"
+        "title":"All Services"
       },
       {
-        "to":"add-main-service",
+        "to":"add-service",
         "icon":"fa-solid fa-house",
-        "title":"Add New Main Service"
+        "title":"Add New Service"
       }
     ]
   },

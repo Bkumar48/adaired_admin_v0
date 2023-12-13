@@ -1,5 +1,6 @@
 import React, { lazy, useCallback, useState, useMemo } from "react";
 import "react-phone-input-2/lib/style.css";
+import "./InputField.scss";
 
 const JoditEditor = lazy(() => import("jodit-react"));
 const PhoneInput = lazy(() => import("react-phone-input-2"));
@@ -58,6 +59,14 @@ const InputField = React.memo((props) => {
               ))
             : null}
         </select>
+      );
+    } else if (props.type === "checkbox") {
+      return (
+        <div className="button r" id="button-3">
+          <input type="checkbox" className="checkbox" />
+          <div className="knobs"></div>
+          <div className="layer"></div>
+        </div>
       );
     } else {
       return (
