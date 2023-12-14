@@ -9,182 +9,143 @@ const InputField = React.memo((props) => {
   if (props.inputComponent === "forminput") {
     if (props.type === "tel") {
       return (
-        <PhoneInput
-          country={"in"}
-          value={props.value}
-          onBlur={props.onBlur}
-          inputProps={{
-            id: props.id,
-            required: props.required,
-            autoComplete: "off",
-            className: props.className,
-            placeholder: props.placeholder,
-            onFocus: props.onFocus,
-            // onBlur: props.onBlur,
-            name: props.name,
-          }}
-        />
+        <>
+          <PhoneInput
+            country={"in"}
+            value={props.value}
+            onBlur={props.onBlur}
+            inputProps={{
+              id: props.id,
+              required: props.required,
+              autoComplete: "off",
+              className: props.className,
+              placeholder: props.placeholder,
+              onFocus: props.onFocus,
+              // onBlur: props.onBlur,
+              name: props.name,
+            }}
+          />
+          {props.error && <p className="error">{props.error}</p>}
+        </>
       );
     } else if (props.type === "textarea") {
       return (
-        <textarea
-          id={props.id}
-          required={props.required}
-          autoComplete="off"
-          className={props.className}
-          placeholder={props.placeholder}
-          value={props.value}
-          onChange={props.onChange}
-          onFocus={props.onFocus}
-          onBlur={props.onBlur}
-          name={props.name}
-          rows={props.rows ? props.rows : 5}
-          style={{
-            resize: "vertical",
-          }}
-        />
+        <>
+          <textarea
+            id={props.id}
+            required={props.required}
+            autoComplete="off"
+            className={props.className}
+            placeholder={props.placeholder}
+            value={props.value}
+            onChange={props.onChange}
+            onFocus={props.onFocus}
+            onBlur={props.onBlur}
+            name={props.name}
+            rows={props.rows ? props.rows : 5}
+            style={{
+              resize: "vertical",
+            }}
+          />
+          {props.error && <p className="error">{props.error}</p>}
+        </>
       );
     } else if (props.type === "select") {
       return (
-        <select
-          className={props.className}
-          onChange={(e) => props.setValue(props.name, e.target.value)}
-        >
-          <option value="">Select {props.label}</option>
-          {props.options
-            ? props.options.map((option, index) => (
-                <option key={index} value={option.value}>
-                  {option.label}
-                </option>
-              ))
-            : null}
-        </select>
+        <>
+          <select
+            className={props.className}
+            onChange={(e) => props.setValue(props.name, e.target.value)}
+          >
+            <option value="">Select {props.label}</option>
+            {props.options
+              ? props.options.map((option, index) => (
+                  <option key={index} value={option.value}>
+                    {option.label}
+                  </option>
+                ))
+              : null}
+          </select>
+          
+          {props.error && <p className="error">{props.error}</p>}
+        </>
       );
     } else if (props.type === "checkbox") {
       return (
-        <div className="button r" id="button-3">
-          <input type="checkbox" className="checkbox" />
-          <div className="knobs"></div>
-          <div className="layer"></div>
-        </div>
+        <>
+          <div className="button r" id="button-3">
+            <input
+              type="checkbox"
+              className="checkbox"
+              name={props.name}
+              id={props.id}
+              onChange={(e) => {
+                props.setValue(props.name, e.target.checked);
+                props.onChange(e);
+              }}
+            />
+            <div className="knobs"></div>
+            <div className="layer"></div>
+          </div>
+          {props.error && <p className="error">{props.error}</p>}
+        </>
       );
     } else {
       return (
-        <input
-          type={props.type}
-          id={props.id}
-          required={props.required}
-          autoComplete="off"
-          className={props.className}
-          placeholder={props.placeholder}
-          value={props.value}
-          onChange={props.onChange}
-          onFocus={props.onFocus}
-          onBlur={props.onBlur}
-          name={props.name}
-          {...props.field}
-        />
+        <>
+          <input
+            id={props.id}
+            required={props.required}
+            autoComplete="off"
+            className={props.className}
+            placeholder={props.placeholder}
+            value={props.value}
+            onChange={props.onChange}
+            onFocus={props.onFocus}
+            onBlur={props.onBlur}
+            name={props.name}
+            type={props.type}
+            {...props.field}
+          />
+          {props.error && <p className="error">{props.error}</p>}
+        </>
       );
     }
-  } else if (props.inputComponent === "joditeditor") {
+  } else if (props.inputComponent === "richtext") {
     return (
-      <JoditEditor
-        value={props.field?.value}
-        onBlur={(value) => props.setValue(props.name, value)}
-        onChange={props.onChange}
-        config={props.config}
-        tabIndex={props.tabIndex}
-        name={props.name}
-      />
+      <>
+        <JoditEditor
+          value={props.field?.value}
+          onBlur={(value) => props.setValue(props.name, value)}
+          onChange={props.onChange}
+          config={props.config}
+          tabIndex={props.tabIndex}
+          name={props.name}
+        />
+        {props.error && <p className="error">{props.error}</p>}
+      </>
     );
-  } else if (props.inputComponent === "imageuploadfield") {
+  } else if (props.inputComponent === "imageUploader") {
     const [file, setFile] = useState(null);
-    const [dragOver, setDragOver] = useState(false);
     const [errorNotification, setErrorNotification] = useState(null);
-    const [imageSrc, setImageSrc] = useState(null);
-    const [isConfirmed, setIsConfirmed] = useState(false);
+
     const handleFile = useCallback((file) => {
       const isImage = /^image\//.test(file?.type);
       if (!file || !isImage) {
         setFile(null);
-        setImageSrc(null);
         setErrorNotification("Not an image file");
         setTimeout(() => setErrorNotification(null), 3000);
         return;
       }
-
       setFile(file);
       props.setValue(props.name, file);
-
-      // Read the image file and set it as the source of the img element
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImageSrc(reader.result);
-      };
-      reader.readAsDataURL(file);
     }, []);
 
-    const handleFileDrop = useCallback(
-      (e) => {
-        e.preventDefault();
-        const isOver = e.type === "dragenter";
-        setDragOver(isOver);
-
-        if (isOver || e.type === "drop") {
-          const droppedFile =
-            e.type === "drop" ? e.dataTransfer.files[0] : null;
-          handleFile(droppedFile);
-        }
-      },
-      [handleFile]
+    const uploadText = file ? (
+      <h4>{file.name}</h4>
+    ) : (
+      <h4>Choose Files to Upload</h4>
     );
-
-    const handleCancelUpload = useCallback(() => {
-      setFile(null);
-      setImageSrc(null);
-      setIsConfirmed(false);
-    }, []);
-
-    const handleConfirmUpload = useCallback(
-      (e) => {
-        e.preventDefault();
-        setIsConfirmed(true);
-      },
-      [file]
-    );
-
-    const uploadText =
-      file && !isConfirmed ? (
-        [
-          <h4 key="fileName">{file.name}</h4>,
-          <button
-            key="cancel"
-            className="cancel-upload-button btn btn-warning"
-            onClick={handleCancelUpload}
-          >
-            Cancel
-          </button>,
-          <button
-            key="upload"
-            className="upload-button btn btn-primary"
-            onClick={handleConfirmUpload}
-          >
-            Confirm
-          </button>,
-        ]
-      ) : file ? (
-        <div>
-          <h4>{file.name}</h4>
-          <button
-            className="cancel-upload-button btn btn-warning"
-            onClick={handleCancelUpload}
-          >
-            Remove File
-          </button>
-        </div>
-      ) : (
-        <h4>Choose Files to Upload</h4>
-      );
 
     const errorNotificationElement = errorNotification ? (
       <div className="error-notification">
@@ -192,18 +153,10 @@ const InputField = React.memo((props) => {
       </div>
     ) : null;
 
-    const dragOverClass = dragOver ? "display-box drag-over" : "display-box";
-
     return (
-      <div>
-        <div
-          className={dragOverClass}
-          onDragOver={handleFileDrop}
-          onDragEnter={handleFileDrop}
-          onDragLeave={handleFileDrop}
-          onDrop={handleFileDrop}
-        >
-          <div className="icon-text-box">
+      <>
+        <div className={"display-box"}>
+          <div className="icon-text-box ">
             <div className="upload-icon">
               <i className="fa fa-upload" aria-hidden="true" />
             </div>
@@ -216,12 +169,19 @@ const InputField = React.memo((props) => {
               id="upload-image-input"
               className="upload-image-input"
               accept="image/*"
-              onDrop={handleFileDrop}
               onChange={(e) => handleFile(e.target.files[0])}
             />
           </div>
         </div>
-      </div>
+
+        {/* {imageSrc && (
+          <div className="image-preview">
+            <img src={imageSrc} alt="Preview" />
+          </div>
+        )} */}
+
+        {props.error && <p className="error">{props.error}</p>}
+      </>
     );
   } else if (props.inputComponent === "dynamininput") {
     const [points, setPoints] = useState([""]);
@@ -295,8 +255,155 @@ const InputField = React.memo((props) => {
         </button>
       </div>
     );
-  } else {
-    return null;
+  } else if (props.inputComponent === "combinedfield") {
+    const [combinedFields, setCombinedFields] = useState([
+      { image: null, editorValue: "" },
+    ]);
+
+    const handleAddField = useCallback(() => {
+      setCombinedFields((prevFields) => {
+        const newFields = [...prevFields, { image: null, editorValue: "" }];
+        props.setValue(props.name, newFields);
+        return newFields;
+      });
+    }, [props.name, props.setValue]);
+
+    const handleDeleteField = useCallback(
+      (index) => {
+        setCombinedFields((prevFields) => {
+          const newFields = prevFields.filter((_, i) => i !== index);
+
+          props.setValue(props.name, newFields);
+          return newFields;
+        });
+      },
+      [props.name, props.setValue]
+    );
+
+    const handleInputBlur = useCallback(
+      (index, value) => {
+        setCombinedFields((prevFields) => {
+          const newFields = [...prevFields];
+          newFields[index].editorValue = value;
+          props.setValue(props.name, newFields);
+          return newFields;
+        });
+      },
+      [props.name, props.setValue]
+    );
+
+    const [files, setFiles] = useState([null]);
+    const [errorNotification, setErrorNotification] = useState(null);
+
+    const handleImageChange = useCallback(
+      (index, image) => {
+        const isImage = /^image\//.test(image?.type);
+        if (!image || !isImage) {
+          setFiles((prevFiles) => {
+            const newFiles = [...prevFiles];
+            newFiles[index] = null; // Set null for invalid images
+            return newFiles;
+          });
+          return;
+        }
+
+        setCombinedFields((prevFields) => {
+          const newFields = [...prevFields];
+          newFields[index].image = image;
+          props.setValue(props.name, newFields);
+          return newFields;
+        });
+
+        setFiles((prevFiles) => {
+          const newFiles = [...prevFiles];
+          newFiles[index] = image;
+          return newFiles;
+        });
+      },
+      [props.name, props.setValue]
+    );
+
+    const errorNotificationElement = errorNotification ? (
+      <div className="error-notification">
+        <p>{errorNotification}</p>
+      </div>
+    ) : null;
+
+    const renderCombinedFields = useMemo(
+      () =>
+        combinedFields.map((field, index) => (
+          <>
+            <button
+              type="button"
+              onClick={() => handleDeleteField(index)}
+              className="dynamicPointsInput__btn dynamicPointsInput__delete"
+              style={{ float: "right" }}
+              key={`delete-${index}`}
+            >
+              <i className="fa-solid fa-trash"></i>
+            </button>
+            <div
+              key={`field-${index}`}
+              className={`input-row input-row__combinedField ${
+                index % 2 === 0 ? "even" : "odd"
+              }`}
+            >
+              <div className={`input-row__image display-box`}>
+                <div className="icon-text-box">
+                  <div className="upload-icon">
+                    <i className="fa fa-upload" aria-hidden="true" />
+                  </div>
+                  <div className="upload-text">
+                    {field.image ? (
+                      <h4>{field.image.name}</h4>
+                    ) : (
+                      <h4>Choose Files to Upload</h4>
+                    )}
+                  </div>
+                  {errorNotificationElement}
+                </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleImageChange(index, e.target.files[0])}
+                  className="upload-image-input"
+                />
+              </div>
+              <div className="input-row__editor">
+                <JoditEditor
+                  value={field.editorValue}
+                  onBlur={(value) => handleInputBlur(index, value)}
+                  onChange={props.onChange}
+                  config={props.config}
+                  tabIndex={props.tabIndex}
+                  name={props.name}
+                />
+              </div>
+            </div>
+          </>
+        )),
+      [
+        combinedFields,
+        handleAddField,
+        handleInputBlur,
+        handleDeleteField,
+        handleImageChange,
+      ]
+    );
+
+    return (
+      <div>
+        {renderCombinedFields}
+        <button
+          type="button"
+          className="dynamicPointsInput__btn dynamicPointsInput__add"
+          onClick={handleAddField}
+        >
+          <i className="fa fa-plus" aria-hidden="true" />{" "}
+          {props.addButtonText ? props.addButtonText : "Add Field"}
+        </button>
+      </div>
+    );
   }
 });
 

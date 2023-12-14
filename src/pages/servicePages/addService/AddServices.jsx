@@ -1,4 +1,11 @@
-import React, { useState, useCallback, Suspense, useMemo, lazy } from "react";
+import React, {
+  useState,
+  useCallback,
+  Suspense,
+  useMemo,
+  lazy,
+  useEffect,
+} from "react";
 import axios from "axios";
 import { useForm, Controller } from "react-hook-form";
 
@@ -34,10 +41,11 @@ const InputBox = React.memo((props) => {
   );
 });
 
-const AddServices = () => {
+const AddServices = React.memo(() => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  // const [isChildService, setIsChildService] = useState(false);
+  const [mainServices, setMainServices] = useState([]);
   const {
     handleSubmit,
     control,
@@ -51,10 +59,11 @@ const AddServices = () => {
       try {
         setLoading(true);
         setError(null);
-        await axios.post(
-          `${import.meta.env.VITE_API_URL}/api/v1/admin/main-services/`,
-          data
-        );
+        // await axios.post(
+        //   `${import.meta.env.VITE_API_URL}/api/v1/admin/main-services/`,
+        //   data
+        // );
+        console.log("data", data);
         reset();
       } catch (error) {
         setError(`Something went wrong: ${error.message}`);
@@ -64,6 +73,26 @@ const AddServices = () => {
     },
     [reset]
   );
+
+  const handleChildChange = useCallback(
+    async (e) => {
+      // setIsChildService(e.target.checked);
+      if (e.target.checked) {
+        try {
+          const response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/api/v1/admin/services/?allParent=true`
+          );
+          setMainServices(response.data.data);
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        setMainServices([]);
+      }
+    },
+    [setMainServices]
+  );
+  
 
   return (
     <div className="add__service">
@@ -76,19 +105,40 @@ const AddServices = () => {
             encType="multipart/form-data"
           >
             <InputBox
-            htmlFor="isChildService"
-            label="Is Child Service"
-            name="isChildService"
-            control={control}
-            placeholder="Is Child Service"
-            type="checkbox"
-            setValue={setValue}
-            inputComponent="forminput"
-            id="isChildService"
-            errors={errors}
-            defaultValue=""
-            // className="full-width-input"
-          />
+              htmlFor="isChildService"
+              label="Is Child Service"
+              name="isChildService"
+              control={control}
+              placeholder="Is Child Service"
+              inputComponent="forminput"
+              setValue={setValue}
+              type="checkbox"
+              id="isChildService"
+              errors={errors}
+              defaultValue={false}
+              onChange={handleChildChange}
+            />
+
+            {mainServices.length > 0 && (
+              <InputBox
+                htmlFor="parentService"
+                label="Parent Service"
+                name="parentService"
+                control={control}
+                placeholder="Parent Service"
+                setValue={setValue}
+                inputComponent="forminput"
+                type="select"
+                id="parentService"
+                errors={errors}
+                defaultValue=""
+                options={mainServices.map((service) => ({
+                  value: service._id,
+                  label: service.serviceTitle,
+                }))}
+                className="full-width-input"
+              />
+            )}
 
             <InputBox
               htmlFor="serviceTitle"
@@ -112,7 +162,7 @@ const AddServices = () => {
               control={control}
               placeholder="Service Description"
               setValue={setValue}
-              inputComponent="joditeditor"
+              inputComponent="richtext"
               id="serviceDescription"
               errors={errors}
               defaultValue=""
@@ -129,7 +179,7 @@ const AddServices = () => {
               control={control}
               placeholder="Service Image"
               setValue={setValue}
-              inputComponent="imageuploadfield"
+              inputComponent="imageUploader"
               id="serviceImage"
               errors={errors}
               defaultValue=""
@@ -142,7 +192,7 @@ const AddServices = () => {
               control={control}
               placeholder="Service Description II"
               setValue={setValue}
-              inputComponent="joditeditor"
+              inputComponent="richtext"
               id="serviceDescriptionII"
               errors={errors}
               defaultValue=""
@@ -173,7 +223,7 @@ const AddServices = () => {
               control={control}
               placeholder="Service Description III"
               setValue={setValue}
-              inputComponent="joditeditor"
+              inputComponent="richtext"
               id="serviceDescriptionIII"
               errors={errors}
               defaultValue=""
@@ -188,6 +238,7 @@ const AddServices = () => {
               label="Four Points"
               name="fourPoints"
               control={control}
+              type="text"
               placeholder="Four Points"
               setValue={setValue}
               inputComponent="dynamininput"
@@ -211,95 +262,24 @@ const AddServices = () => {
               className="full-width-input"
             />
 
-            <div className="two-columns">
-              <InputBox
-                htmlFor="ourProcessImageI"
-                label="Our Process Image I"
-                name="ourProcessImageI"
-                control={control}
-                placeholder="Our Process Image I"
-                setValue={setValue}
-                inputComponent="imageuploadfield"
-                id="ourProcessImageI"
-                errors={errors}
-                defaultValue=""
-              />
-              <InputBox
-                htmlFor="ourProcessImageII"
-                label="Our Process Image II"
-                name="ourProcessImageII"
-                control={control}
-                placeholder="Our Process Image II"
-                setValue={setValue}
-                inputComponent="imageuploadfield"
-                id="ourProcessImageII"
-                errors={errors}
-                defaultValue=""
-              />
-            </div>
-
-            <div className="two-columns">
-              <InputBox
-                htmlFor="leftImage"
-                label="Left Image"
-                name="leftImage"
-                control={control}
-                placeholder="Left Image"
-                setValue={setValue}
-                inputComponent="imageuploadfield"
-                id="leftImage"
-                errors={errors}
-                defaultValue=""
-              />
-
-              <InputBox
-                htmlFor="rightText"
-                label="Right Text"
-                name="rightText"
-                control={control}
-                placeholder="Right Text"
-                setValue={setValue}
-                inputComponent="joditeditor"
-                id="rightText"
-                errors={errors}
-                defaultValue=""
-                config={{
-                  readonly: false,
-                  height: 300,
-                }}
-              />
-            </div>
-
-            <div className="two-columns">
-              <InputBox
-                htmlFor="leftText"
-                label="Left Text"
-                name="leftText"
-                control={control}
-                placeholder="Left Text"
-                setValue={setValue}
-                inputComponent="joditeditor"
-                id="leftText"
-                errors={errors}
-                defaultValue=""
-                config={{
-                  readonly: false,
-                  height: 300,
-                }}
-              />
-              <InputBox
-                htmlFor="rightImage"
-                label="Right Image"
-                name="rightImage"
-                control={control}
-                placeholder="Right Image"
-                setValue={setValue}
-                inputComponent="imageuploadfield"
-                id="rightImage"
-                errors={errors}
-                defaultValue=""
-              />
-            </div>
+            <InputBox
+              htmlFor="combinedSection"
+              label="Combined Section"
+              name="combinedSection"
+              control={control}
+              placeholder="Combined Section"
+              setValue={setValue}
+              inputComponent="combinedfield"
+              id="combinedSection"
+              errors={errors}
+              defaultValue={[]}
+              // onChange={(value) => setValue("combinedSection", value)}
+              config={{
+                readonly: false,
+                height: 300,
+              }}
+              addButtonText="Add New Section"
+            />
 
             <InputBox
               htmlFor="serviceHeadingIII"
@@ -322,7 +302,7 @@ const AddServices = () => {
               control={control}
               placeholder="Service Description IV"
               setValue={setValue}
-              inputComponent="joditeditor"
+              inputComponent="richtext"
               id="serviceDescriptionIV"
               errors={errors}
               defaultValue=""
@@ -353,7 +333,7 @@ const AddServices = () => {
                 control={control}
                 placeholder="Last Section Text"
                 setValue={setValue}
-                inputComponent="joditeditor"
+                inputComponent="richtext"
                 id="LastSectionText"
                 errors={errors}
                 defaultValue=""
@@ -369,7 +349,7 @@ const AddServices = () => {
                 control={control}
                 placeholder="Last Section Image"
                 setValue={setValue}
-                inputComponent="imageuploadfield"
+                inputComponent="imageUploader"
                 id="LastSectionImage"
                 errors={errors}
                 defaultValue=""
@@ -387,7 +367,7 @@ const AddServices = () => {
       </Cards>
     </div>
   );
-};
+});
 
 InputBox.displayName = "InputBox";
 AddServices.displayName = "AddMainServices";
