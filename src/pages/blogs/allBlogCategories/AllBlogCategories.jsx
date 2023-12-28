@@ -1,23 +1,20 @@
 // Package imports
 import { useState, useEffect, lazy, Suspense, startTransition } from "react";
 import axios from "axios";
-import { motion, AnimatePresence } from "framer-motion";
-
 // Components Imports
-import formatDate from "../../utils/DateFormatting/FormatDate";
-const Table = lazy(() => import("../../components/table/Table"));
-const Cards = lazy(() => import("../../components/card/Cards"));
-const FilterTableCard = lazy(() =>
-  import("../../components/filterTableCard/FilterTableCard")
-);
+const Table = lazy(() => import("../../../components/table/Table"));
+const Cards = lazy(() => import("../../../components/card/Cards"));
+const token = sessionStorage.getItem("token");
+if (token) axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
 // Table Header Data
 const TableHead = [
   "No.",
   "Category",
   "Parent Category",
-  "Slug",
-  "Status",
+  "Sub Categories",
+  // "Slug",
+  // "Status",
   "Actions",
 ];
 
@@ -30,10 +27,22 @@ const renderBody = (item, index, items) => {
   return (
     <tr key={index}>
       <td>{calculateIndex}</td>
-      <td>{item.category}</td>
-      <td>{item.parent_category}</td>
-      <td>{item.slug}</td>
-      <td>{item.status}</td>
+      <td>{item.categoryName}</td>
+      <td>{item.parentId}</td>
+      <td>
+        {item.subCategories.map((subcategory, subIndex) => (
+          <span key={subIndex}>
+            {subcategory}
+            {subIndex < item.subCategories.length - 1 && (
+              <>
+                ,<br />
+              </>
+            )}
+          </span>
+        ))}
+      </td>
+      {/* <td>{item.slug}</td>
+      <td>{item.status}</td> */}
       <td>
         <div className="action__btn-cell">
           <button
@@ -81,12 +90,7 @@ const AllBlogsCategories = () => {
         const res = await axios.get(
           `${
             import.meta.env.VITE_API_URL
-          }/api/v1/user/blogcate/getallcate`,
-          {
-            headers: {
-              Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}`,
-            },
-          }
+          }/api/v1/admin/blogcategory/findCategory`
         );
         startTransition(() => {
           setBlogs(res.data.data);
@@ -106,7 +110,11 @@ const AllBlogsCategories = () => {
     <>
       <div className="row">
         <div className="col-12">
-          <Cards header="All Blogs Catgories" addnew="/add-blog-category">
+          <Cards
+            header="All Blogs Catgories"
+            addnew="/add-blog-category"
+            addnewText="Add New Category"
+          >
             <Suspense fallback={<div>Loading...</div>}>
               <Table
                 limit="10"

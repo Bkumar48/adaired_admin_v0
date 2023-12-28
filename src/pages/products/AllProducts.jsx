@@ -9,6 +9,8 @@ const Cards = lazy(() => import("../../components/card/Cards"));
 const FilterTableCard = lazy(() =>
   import("../../components/filterTableCard/FilterTableCard")
 );
+const token = sessionStorage.getItem("token");
+if (token) axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
 // Table Header Data
 const TableHead = [
@@ -120,12 +122,7 @@ const AllProducts = () => {
     const fetchProducts = async () => {
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/v1/product/allProduct`,
-          {
-            headers: {
-              Authorization: `Bearer ${import.meta.env.VITE_API_TOKEN}`,
-            },
-          }
+          `${import.meta.env.VITE_API_URL}/api/v1/product/allProduct`
         );
         startTransition(() => {
           setProducts(res.data);

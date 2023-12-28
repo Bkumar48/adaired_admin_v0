@@ -76,7 +76,10 @@ const TopNav = React.memo(({ setIsUserLoggedIn }) => {
       onClick={() => item.content === "Logout" && handleLogout()}
     >
       {item.content === "Logout" ? (
-        <i className={item.icon} onClick={handleLogout}></i>
+        <>
+          <i className={item.icon} onClick={handleLogout}></i>
+          <span>{item.content}</span>
+        </>
       ) : (
         <Link to={item.to}>
           <i className={item.icon}></i>

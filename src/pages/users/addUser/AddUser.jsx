@@ -1,8 +1,7 @@
-import { lazy, Suspense, useState, useCallback } from "react";
+import { lazy } from "react";
 import axios from "axios";
 import { useMutation } from "react-query";
 import { queryClient } from "../../../utils/QueryClient/queryClient";
-import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 
 import InputBox from "../../../components/FormInputEntryPoint/InputBox";

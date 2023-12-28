@@ -19,8 +19,6 @@ const AllProductCategories = lazyComponent(
   "../pages/products/AllProductCategories"
 );
 const AllOrders = lazyComponent("../pages/orders/AllOrders");
-const AllBlogs = lazyComponent("../pages/blogs/AllBlogs");
-const AllBlogsCategories = lazyComponent("../pages/blogs/AllBlogCategories");
 const AllTickets = lazyComponent("../pages/tickets/AllTickets");
 const AllPages = lazyComponent("../pages/pages/AllPages");
 const AllTestimonials = lazyComponent("../pages/testimonials/AllTestimonials");
@@ -32,9 +30,15 @@ const AllServices = lazyComponent(
 );
 const AddServices = lazyComponent(
   "../pages/servicePages/addService/AddServices"
-);
-const Loader = lazyComponent("../components/loader/Loader");
+  );
+  const Loader = lazyComponent("../components/loader/Loader");
 
+  // Blogs and Blogs Categories
+  const AddBlog = lazyComponent("../pages/blogs/addBlog/AddBlog.jsx");
+  const EditBlog = lazyComponent("../pages/blogs/editBlog/EditBlog.jsx");
+  const AllBlogs = lazyComponent("../pages/blogs/allBlogs/AllBlogs");
+  const AllBlogsCategories = lazyComponent("../pages/blogs/allBlogCategories/AllBlogCategories");
+  
 const Layout = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -107,14 +111,12 @@ export default Layout;
 const dashboardRoutes = [
   { path: "all-users", element: <AllUsers /> },
   { path: "add-user", element: <AddUser /> },
-  { path: "edit-user", element: <EditUser />},
+  { path: "edit-user", element: <EditUser /> },
   { path: "all-roles", element: <AllRoles /> },
   { path: "all-products", element: <AllProducts /> },
   { path: "all-product-categories", element: <AllProductCategories /> },
   { path: "all-coupons", element: <AllCoupons /> },
   { path: "all-orders", element: <AllOrders /> },
-  { path: "all-blogs", element: <AllBlogs /> },
-  { path: "all-blog-categories", element: <AllBlogsCategories /> },
   { path: "all-tickets", element: <AllTickets /> },
   { path: "all-pages", element: <AllPages /> },
   { path: "all-testimonials", element: <AllTestimonials /> },
@@ -122,4 +124,9 @@ const dashboardRoutes = [
   { path: "all-faq-categories", element: <AllFaqCategories /> },
   { path: "add-service", element: <AddServices /> },
   { path: "all-services", element: <AllServices /> },
+  // Blogs and categories
+  { path: "add-blog", element: <AddBlog /> },
+  { path: "edit-blog", element: <EditBlog /> },
+  { path: "all-blogs", element: <AllBlogs /> },
+  { path: "all-blog-categories", element: <AllBlogsCategories /> },
 ];
