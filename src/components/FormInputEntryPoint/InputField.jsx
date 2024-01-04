@@ -1,4 +1,4 @@
-import React, { lazy, useCallback, useState, useMemo } from "react";
+import React, { lazy, useCallback, useState, useMemo, useEffect } from "react";
 import "react-phone-input-2/lib/style.css";
 import "./InputField.scss";
 
@@ -66,7 +66,7 @@ const InputField = React.memo((props) => {
                 ))
               : null}
           </select>
-          
+
           {props.error && <p className="error">{props.error}</p>}
         </>
       );
@@ -263,7 +263,6 @@ const InputField = React.memo((props) => {
     const handleAddField = useCallback(() => {
       setCombinedFields((prevFields) => {
         const newFields = [...prevFields, { image: null, editorValue: "" }];
-        props.setValue(props.name, newFields);
         return newFields;
       });
     }, [props.name, props.setValue]);
@@ -402,6 +401,409 @@ const InputField = React.memo((props) => {
           <i className="fa fa-plus" aria-hidden="true" />{" "}
           {props.addButtonText ? props.addButtonText : "Add Field"}
         </button>
+      </div>
+    );
+  } else if (props.inputComponent === "accordion") {
+    const [accordians, setAccordians] = useState([{ title: "", content: "" }]);
+
+    const handleAddAccordian = useCallback(() => {
+      setAccordians((prevAccordians) => {
+        const newAccordians = [...prevAccordians, { title: "", content: "" }];
+        props.setValue(props.name, newAccordians);
+        return newAccordians;
+      });
+    }, [props.name, props.setValue]);
+
+    const handleDeleteAccordian = useCallback(
+      (index) => {
+        setAccordians((prevAccordians) => {
+          const newAccordians = prevAccordians.filter((_, i) => i !== index);
+
+          props.setValue(props.name, newAccordians);
+          return newAccordians;
+        });
+      },
+      [props.name, props.setValue]
+    );
+
+    const handleInputBlur = useCallback(
+      (index, value, type) => {
+        setAccordians((prevAccordians) => {
+          const newAccordians = [...prevAccordians];
+          newAccordians[index][type] = value;
+          props.setValue(props.name, newAccordians);
+          return newAccordians;
+        });
+      },
+      [props.name, props.setValue]
+    );
+
+    const renderAccordians = useMemo(
+      () =>
+        accordians.map((accordian, index) => (
+          <>
+            <button
+              type="button"
+              onClick={() => handleDeleteAccordian(index)}
+              className="dynamicPointsInput__btn dynamicPointsInput__delete"
+              style={{ float: "right" }}
+              key={`delete-${index}`}
+            >
+              <i className="fa-solid fa-trash"></i>
+            </button>
+            <div
+              key={`accordian-${index}`}
+              className={`input-row__accordian ${
+                index % 2 === 0 ? "even" : "odd"
+              }`}
+            >
+              <div className={`input-row__title`}>
+                <input
+                  type="text"
+                  placeholder={`Title ${index + 1}`}
+                  defaultValue={accordian.title}
+                  onBlur={(e) =>
+                    handleInputBlur(index, e.target.value, "title")
+                  }
+                  className="full-width-input"
+                  name={`fourPoints-${index}`}
+                />
+              </div>
+              <div className="input-row__content">
+                <JoditEditor
+                  value={accordian.content}
+                  onBlur={(value) => handleInputBlur(index, value, "content")}
+                  onChange={props.onChange}
+                  config={props.config}
+                  tabIndex={props.tabIndex}
+                  name={props.name}
+                />
+              </div>
+            </div>
+          </>
+        )),
+      [accordians, handleAddAccordian, handleInputBlur, handleDeleteAccordian]
+    );
+
+    return (
+      <div>
+        {renderAccordians}
+
+        <button
+          type="button"
+          className="dynamicPointsInput__btn dynamicPointsInput__add"
+          onClick={handleAddAccordian}
+          style={{ marginTop: "10px" }}
+        >
+          <i className="fa fa-plus" aria-hidden="true" />{" "}
+          {props.addButtonText ? props.addButtonText : "Add Accordian"}
+        </button>
+      </div>
+    );
+  } else if (props.inputComponent === "combinedField") {
+    const [combinedFields, setCombinedFields] = useState([
+      { combinedSectionImage: null, editorValue: "" },
+    ]);
+
+    const handleAddAccordionField = useCallback(() => {
+      setCombinedFields((prevFields) => {
+        const newFields = [
+          ...prevFields,
+          {
+            combinedSectionImage: null,
+            accordion: [{ title: "", content: "" }],
+          },
+        ];
+        return newFields;
+      });
+    }, [props.name, props.setValue]);
+
+    const handleAddEditorField = useCallback(() => {
+      setCombinedFields((prevFields) => {
+        const newFields = [
+          ...prevFields,
+          { combinedSectionImage: null, editorValue: "" },
+        ];
+        return newFields;
+      });
+    }, [props.name, props.setValue]);
+
+    const handleDeleteField = useCallback(
+      (index) => {
+        setCombinedFields((prevFields) => {
+          const newFields = prevFields.filter((_, i) => i !== index);
+          return newFields;
+        });
+      },
+      [props.name, props.setValue]
+    );
+
+    const handleImageChange = useCallback(
+      (index, image) => {
+        const isImage = /^image\//.test(image?.type);
+        if (!image || !isImage) {
+          setCombinedFields((prevFields) => {
+            const newFields = [...prevFields];
+            newFields[index].combinedSectionImage = null; // Set null for invalid images
+            return newFields;
+          });
+          return;
+        }
+
+        setCombinedFields((prevFields) => {
+          const newFields = [...prevFields];
+          newFields[index].combinedSectionImage = image;
+          props.setValue(props.name, newFields);
+          return newFields;
+        });
+      },
+      [props.name, props.setValue]
+    );
+
+    const handleAddAccordian = useCallback(
+      (index) => {
+        setCombinedFields((prevFields) => {
+          const newFields = [...prevFields];
+          newFields[index] = {
+            ...newFields[index],
+            accordion: [
+              ...newFields[index].accordion,
+              { title: "", content: "" },
+            ],
+          };
+
+          // newFields[index].accordion.push({ title: "", content: "" });
+          return newFields;
+        });
+      },
+      [setCombinedFields]
+    );
+
+    const handleDeleteAccordian = useCallback(
+      (fieldIndex, accordianIndex) => {
+        setCombinedFields((prevFields) => {
+          const newFields = [...prevFields];
+          newFields[fieldIndex].accordion.splice(accordianIndex, 1);
+          return newFields;
+        });
+      },
+      [setCombinedFields]
+    );
+
+    const handleInputBlur = useCallback(
+      (fieldIndex, accordianIndex, value, type) => {
+        setCombinedFields((prevFields) => {
+          const newFields = [...prevFields];
+
+          if (
+            newFields[fieldIndex] &&
+            newFields[fieldIndex].accordion &&
+            newFields[fieldIndex].accordion[accordianIndex]
+          ) {
+            newFields[fieldIndex].accordion[accordianIndex][type] = value;
+            props.setValue(props.name, newFields);
+            // console.log(newFields[fieldIndex].accordion)
+            console.log(combinedFields);
+          } else {
+            console.error("Invalid fieldIndex or accordianIndex");
+          }
+
+          return newFields;
+        });
+      },
+      [setCombinedFields]
+    );
+
+    const Accordian = ({
+      title,
+      content,
+      fieldIndex,
+      accordianIndex,
+      onAddAccordian,
+      onDeleteAccordian,
+      onInputBlur,
+    }) => {
+      const handleAddAccordian = useCallback(() => {
+        onAddAccordian(fieldIndex);
+      }, [onAddAccordian, fieldIndex]);
+
+      const handleDeleteAccordian = useCallback(() => {
+        onDeleteAccordian(fieldIndex, accordianIndex);
+      }, [onDeleteAccordian, fieldIndex, accordianIndex]);
+
+      const handleInputBlur = useCallback(
+        (value, type) => {
+          onInputBlur(fieldIndex, accordianIndex, value, type);
+        },
+        [onInputBlur, fieldIndex, accordianIndex]
+      );
+
+      return (
+        <div className={`input-row__accordian`}>
+          <button
+            type="button"
+            onClick={handleDeleteAccordian}
+            className="dynamicPointsInput__btn "
+            // style={{ float: "right" }}
+          >
+            <i className="fa-solid fa-trash"></i> Delete Accordian
+          </button>
+          <div className={`input-row__title`}>
+            <input
+              type="text"
+              placeholder={`Title ${accordianIndex + 1}`}
+              defaultValue={title}
+              onBlur={(e) => handleInputBlur(e.target.value, "title")}
+              className="full-width-input"
+              name={`fourPoints-${accordianIndex}`}
+            />
+          </div>
+          <div className="input-row__content">
+            <JoditEditor
+              value={content}
+              onBlur={(value) => handleInputBlur(value, "content")}
+              onChange={props.onChange}
+              config={props.config}
+              tabIndex={props.tabIndex}
+              name={props.name}
+            />
+          </div>
+          <button
+            type="button"
+            className="dynamicPointsInput__btn dynamicPointsInput__add"
+            onClick={handleAddAccordian}
+          >
+            <i className="fa fa-plus" aria-hidden="true" /> Add Accordian
+          </button>
+        </div>
+      );
+    };
+
+    const renderCombinedFields = useMemo(
+      () =>
+        combinedFields.map((field, index) => (
+          <>
+            <div key={`field-${index}`}>
+              <button
+                type="button"
+                onClick={() => handleDeleteField(index)}
+                className="dynamicPointsInput__btn dynamicPointsInput__delete"
+                style={{ float: "right" }}
+                key={`delete-${index}`}
+              >
+                <i className="fa-solid fa-trash"></i> {""}
+                Delete Row
+              </button>
+              <div
+                key={`field-${index}`}
+                className={`input-row input-row__combinedField ${
+                  index % 2 === 0 ? "even" : "odd"
+                }`}
+              >
+                <div className={`input-row__image display-box`}>
+                  <div className="icon-text-box">
+                    <div className="upload-icon">
+                      <i className="fa fa-upload" aria-hidden="true" />
+                    </div>
+                    <div className="upload-text">
+                      {field.combinedSectionImage ? (
+                        <h4>{field.combinedSectionImage.name}</h4>
+                      ) : (
+                        <h4>Choose Files to Upload</h4>
+                      )}
+                    </div>
+                  </div>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    // onChange={(e) =>
+                    //   handleImageChange(index, e.target.files[0])
+                    // }
+                    onChange={(e) => {
+                      const selectedFile = e.target.files[0];
+                      const fileValue = selectedFile ? selectedFile : ""; // If selectedFile is truthy, use it; otherwise, use an empty string
+                      handleImageChange(index, fileValue);
+                    }}
+                    className="upload-image-input"
+                  />
+                </div>
+
+                {field.accordion &&
+                  field.accordion.map((accordian, accordianIndex) => (
+                    <Accordian
+                      // key={`accordian-${accordianIndex}`}
+                      key={`accordian-${index}-${accordianIndex}`}
+                      title={accordian.title}
+                      content={accordian.content}
+                      fieldIndex={index}
+                      accordianIndex={accordianIndex}
+                      onAddAccordian={handleAddAccordian}
+                      onDeleteAccordian={handleDeleteAccordian}
+                      onInputBlur={handleInputBlur}
+                    />
+                  ))}
+
+                {field.hasOwnProperty("editorValue") && (
+                  <div className="input-row__editor">
+                    <JoditEditor
+                      value={field.editorValue}
+                      onBlur={(value) => {
+                        const newFields = [...combinedFields];
+                        newFields[index].editorValue = value;
+                        props.setValue(props.name, newFields);
+                        setCombinedFields(newFields);
+                      }}
+                      onChange={props.onChange}
+                      config={props.config}
+                      tabIndex={props.tabIndex}
+                      name={props.name}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        )),
+      [
+        combinedFields,
+        handleDeleteField,
+        handleImageChange,
+        handleAddAccordian,
+        handleDeleteAccordian,
+        handleInputBlur,
+        props,
+      ]
+    );
+    return (
+      <div>
+        {renderCombinedFields}
+        <div
+          style={{
+            display: "flex",
+            gap: "10px",
+          }}
+        >
+          <button
+            type="button"
+            className="dynamicPointsInput__btn dynamicPointsInput__add"
+            onClick={handleAddEditorField}
+          >
+            <i className="fa fa-plus" aria-hidden="true" />{" "}
+            {props.addButtonText
+              ? props.addButtonText
+              : "Add Field With Editor"}
+          </button>
+          <button
+            type="button"
+            className="dynamicPointsInput__btn dynamicPointsInput__add"
+            onClick={handleAddAccordionField}
+          >
+            <i className="fa fa-plus" aria-hidden="true" />{" "}
+            {props.addButtonText
+              ? props.addButtonText
+              : "Add Field With Accordion"}
+          </button>
+        </div>
       </div>
     );
   }

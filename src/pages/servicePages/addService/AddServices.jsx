@@ -59,10 +59,10 @@ const AddServices = React.memo(() => {
       try {
         setLoading(true);
         setError(null);
-        // await axios.post(
-        //   `${import.meta.env.VITE_API_URL}/api/v1/admin/main-services/`,
-        //   data
-        // );
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/v1/admin/services/`,
+          data
+        );
         console.log("data", data);
         reset();
       } catch (error) {
@@ -80,7 +80,9 @@ const AddServices = React.memo(() => {
       if (e.target.checked) {
         try {
           const response = await axios.get(
-            `${import.meta.env.VITE_API_URL}/api/v1/admin/services/?allParent=true`
+            `${
+              import.meta.env.VITE_API_URL
+            }/api/v1/admin/services/?allParent=true`
           );
           setMainServices(response.data.data);
         } catch (error) {
@@ -92,7 +94,6 @@ const AddServices = React.memo(() => {
     },
     [setMainServices]
   );
-  
 
   return (
     <div className="add__service">
@@ -262,6 +263,33 @@ const AddServices = React.memo(() => {
               className="full-width-input"
             />
 
+            <div className="two-columns">
+              <InputBox
+                htmlFor="ourProcessImageI"
+                label="Our Process Image I"
+                name="ourProcessImageI"
+                control={control}
+                placeholder="Our Process Image I"
+                setValue={setValue}
+                inputComponent="imageUploader"
+                id="ourProcessImageI"
+                errors={errors}
+                defaultValue=""
+              />
+              <InputBox
+                htmlFor="ourProcessImageII"
+                label="Our Process Image II"
+                name="ourProcessImageII"
+                control={control}
+                placeholder="Our Process Image II"
+                setValue={setValue}
+                inputComponent="imageUploader"
+                id="ourProcessImageII"
+                errors={errors}
+                defaultValue=""
+              />
+            </div>
+
             <InputBox
               htmlFor="combinedSection"
               label="Combined Section"
@@ -269,16 +297,15 @@ const AddServices = React.memo(() => {
               control={control}
               placeholder="Combined Section"
               setValue={setValue}
-              inputComponent="combinedfield"
+              inputComponent="combinedField"
               id="combinedSection"
               errors={errors}
               defaultValue={[]}
-              // onChange={(value) => setValue("combinedSection", value)}
               config={{
                 readonly: false,
                 height: 300,
+                placeholder: "Description",
               }}
-              addButtonText="Add New Section"
             />
 
             <InputBox
