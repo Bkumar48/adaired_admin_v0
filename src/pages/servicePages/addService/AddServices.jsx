@@ -63,8 +63,26 @@ const AddServices = React.memo(() => {
           `${import.meta.env.VITE_API_URL}/api/v1/admin/services/`,
           data
         );
-        console.log("data", data);
-        reset();
+        reset({
+          isChildService: false,
+          parentService: "",
+          serviceTitle: "",
+          serviceDescription: "",
+          serviceImage: "",
+          serviceDescriptionII: "",
+          serviceHeadingII: "",
+          serviceDescriptionIII: "",
+          fourPoints: [],
+          ourProcessSubHeading: "",
+          ourProcessImageI: "",
+          ourProcessImageII: "",
+          combinedSection: "",
+          serviceHeadingIII: "",
+          serviceDescriptionIV: "",
+          serviceNote: "",
+          LastSectionText: "",
+          LastSectionImage: "",
+        });
       } catch (error) {
         setError(`Something went wrong: ${error.message}`);
       } finally {
@@ -171,6 +189,19 @@ const AddServices = React.memo(() => {
                 readonly: false,
                 height: 300,
               }}
+            />
+
+            <InputBox
+              htmlFor="mainTwoPoints"
+              label="Main Two Points"
+              name="mainTwoPoints"
+              control={control}
+              setValue={setValue}
+              inputComponent="accordion"
+              id="mainTwoPoints"
+              errors={errors}
+              defaultValue={[]}
+              onChange={(value) => setValue("mainTwoPoints", value)}
             />
 
             <InputBox
@@ -300,7 +331,7 @@ const AddServices = React.memo(() => {
               inputComponent="combinedField"
               id="combinedSection"
               errors={errors}
-              defaultValue={[]}
+              defaultValue=""
               config={{
                 readonly: false,
                 height: 300,

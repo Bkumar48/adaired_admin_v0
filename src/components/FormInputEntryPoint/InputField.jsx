@@ -496,13 +496,13 @@ const InputField = React.memo((props) => {
           style={{ marginTop: "10px" }}
         >
           <i className="fa fa-plus" aria-hidden="true" />{" "}
-          {props.addButtonText ? props.addButtonText : "Add Accordian"}
+          {props.addButtonText ? props.addButtonText : "Add Field"}
         </button>
       </div>
     );
   } else if (props.inputComponent === "combinedField") {
     const [combinedFields, setCombinedFields] = useState([
-      { combinedSectionImage: null, editorValue: "" },
+      { combinedSectionImage: "", editorValue: "" },
     ]);
 
     const handleAddAccordionField = useCallback(() => {
@@ -510,7 +510,7 @@ const InputField = React.memo((props) => {
         const newFields = [
           ...prevFields,
           {
-            combinedSectionImage: null,
+            combinedSectionImage: "",
             accordion: [{ title: "", content: "" }],
           },
         ];
@@ -522,7 +522,7 @@ const InputField = React.memo((props) => {
       setCombinedFields((prevFields) => {
         const newFields = [
           ...prevFields,
-          { combinedSectionImage: null, editorValue: "" },
+          { combinedSectionImage: "", editorValue: "" },
         ];
         return newFields;
       });
@@ -552,6 +552,7 @@ const InputField = React.memo((props) => {
 
         setCombinedFields((prevFields) => {
           const newFields = [...prevFields];
+
           newFields[index].combinedSectionImage = image;
           props.setValue(props.name, newFields);
           return newFields;
@@ -602,8 +603,6 @@ const InputField = React.memo((props) => {
           ) {
             newFields[fieldIndex].accordion[accordianIndex][type] = value;
             props.setValue(props.name, newFields);
-            // console.log(newFields[fieldIndex].accordion)
-            console.log(combinedFields);
           } else {
             console.error("Invalid fieldIndex or accordianIndex");
           }
@@ -716,13 +715,8 @@ const InputField = React.memo((props) => {
                   <input
                     type="file"
                     accept="image/*"
-                    // onChange={(e) =>
-                    //   handleImageChange(index, e.target.files[0])
-                    // }
                     onChange={(e) => {
-                      const selectedFile = e.target.files[0];
-                      const fileValue = selectedFile ? selectedFile : ""; // If selectedFile is truthy, use it; otherwise, use an empty string
-                      handleImageChange(index, fileValue);
+                      handleImageChange(index, e.target.files[0]);
                     }}
                     className="upload-image-input"
                   />
