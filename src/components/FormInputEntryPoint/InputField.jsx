@@ -502,7 +502,7 @@ const InputField = React.memo((props) => {
     );
   } else if (props.inputComponent === "combinedField") {
     const [combinedFields, setCombinedFields] = useState([
-      { combinedSectionImage: "", editorValue: "" },
+      { combinedSectionImage: "", editorValue: "", heading: "" },
     ]);
 
     const handleAddAccordionField = useCallback(() => {
@@ -511,7 +511,7 @@ const InputField = React.memo((props) => {
           ...prevFields,
           {
             combinedSectionImage: "",
-            accordion: [{ title: "", content: "" }],
+            accordion: [{ title: "", content: "", heading: "" }],
           },
         ];
         return newFields;
@@ -522,7 +522,7 @@ const InputField = React.memo((props) => {
       setCombinedFields((prevFields) => {
         const newFields = [
           ...prevFields,
-          { combinedSectionImage: "", editorValue: "" },
+          { combinedSectionImage: "", editorValue: "", heading: "" },
         ];
         return newFields;
       });
@@ -722,19 +722,48 @@ const InputField = React.memo((props) => {
                   />
                 </div>
 
+                <div className="input-row__heading">
+                  <input
+                    type="text"
+                    placeholder="Enter Heading"
+                    defaultValue={field.heading}
+                    onBlur={(e) => {
+                      const newFields = [...combinedFields];
+                      newFields[index].heading = e.target.value;
+                      props.setValue(props.name, newFields);
+                      setCombinedFields(newFields);
+                    }}
+                    className="full-width-input"
+                    name={`heading-${index}`}
+                    style={{ marginBottom: "10px" }}
+                  />
+                </div>
+
                 {field.accordion &&
                   field.accordion.map((accordian, accordianIndex) => (
-                    <Accordian
-                      // key={`accordian-${accordianIndex}`}
-                      key={`accordian-${index}-${accordianIndex}`}
-                      title={accordian.title}
-                      content={accordian.content}
-                      fieldIndex={index}
-                      accordianIndex={accordianIndex}
-                      onAddAccordian={handleAddAccordian}
-                      onDeleteAccordian={handleDeleteAccordian}
-                      onInputBlur={handleInputBlur}
-                    />
+                    <>
+                      {/* <div className="input-row__heading">
+                        <input
+                        type="text"
+                        placeholder="Enter Heading"
+                        defaultValue={accordian.heading}
+                        onBlur={(e) => handleInputBlur(index, accordianIndex, e.target.value, "heading")}
+                        className="full-width-input"
+                        name={`heading-${accordianIndex}`}
+                      />
+                      </div> */}
+                      <Accordian
+                        // key={`accordian-${accordianIndex}`}
+                        key={`accordian-${index}-${accordianIndex}`}
+                        title={accordian.title}
+                        content={accordian.content}
+                        fieldIndex={index}
+                        accordianIndex={accordianIndex}
+                        onAddAccordian={handleAddAccordian}
+                        onDeleteAccordian={handleDeleteAccordian}
+                        onInputBlur={handleInputBlur}
+                      />
+                    </>
                   ))}
 
                 {field.hasOwnProperty("editorValue") && (
