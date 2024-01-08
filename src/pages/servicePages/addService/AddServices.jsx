@@ -383,35 +383,82 @@ const AddServices = React.memo(() => {
               className="full-width-input"
             />
 
-            <div className="two-columns">
-              <InputBox
-                htmlFor="LastSectionText"
-                label="Last Section Text"
-                name="LastSectionText"
-                control={control}
-                placeholder="Last Section Text"
-                setValue={setValue}
-                inputComponent="richtext"
-                id="LastSectionText"
-                errors={errors}
-                defaultValue=""
-                config={{
-                  readonly: false,
-                  height: 300,
-                }}
-              />
-              <InputBox
-                htmlFor="LastSectionImage"
-                label="Last Section Image"
-                name="LastSectionImage"
-                control={control}
-                placeholder="Last Section Image"
-                setValue={setValue}
-                inputComponent="imageUploader"
-                id="LastSectionImage"
-                errors={errors}
-                defaultValue=""
-              />
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "20px",
+              }}
+            >
+              <div>
+                <InputBox
+                  htmlFor="LastSectionHeading"
+                  label="Last Section Heading"
+                  name="LastSectionHeading"
+                  control={control}
+                  placeholder="Last Section Heading"
+                  setValue={setValue}
+                  inputComponent="forminput"
+                  id="LastSectionHeading"
+                  errors={errors}
+                  defaultValue=""
+                  className="full-width-input"
+                />
+                <InputBox
+                  htmlFor="LastSectionText"
+                  label="Last Section Text"
+                  name="LastSectionText"
+                  control={control}
+                  placeholder="Last Section Text"
+                  setValue={setValue}
+                  inputComponent="richtext"
+                  id="LastSectionText"
+                  errors={errors}
+                  defaultValue=""
+                  config={{
+                    readonly: false,
+                    height: 100,
+                  }}
+                />
+                <InputBox
+                  htmlFor="LastSectionPoints"
+                  label="Last Section Points"
+                  name="LastSectionPoints"
+                  control={control}
+                  inputComponent="pointersWithIcons"
+                  setValue={setValue}
+                  id="LastSectionPoints"
+                  errors={errors}
+                  defaultValue=""
+                />
+                <InputBox
+                  htmlFor="LastSectionHookLine"
+                  label="Last Section Hook Line"
+                  name="LastSectionHookLine"
+                  control={control}
+                  placeholder="Last Section Hook Line"
+                  setValue={setValue}
+                  inputComponent="forminput"
+                  id="LastSectionHookLine"
+                  errors={errors}
+                  defaultValue=""
+                  className="full-width-input"
+                />
+              </div>
+              <div>
+                <InputBox
+                  htmlFor="LastSectionImage"
+                  label="Last Section Image"
+                  name="LastSectionImage"
+                  control={control}
+                  placeholder="Last Section Image"
+                  setValue={setValue}
+                  inputComponent="imageUploader"
+                  id="LastSectionImage"
+                  errors={errors}
+                  defaultValue=""
+                />
+              </div>
             </div>
 
             <div className="form-btn-box">

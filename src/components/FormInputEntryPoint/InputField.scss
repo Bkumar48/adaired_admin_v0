@@ -271,10 +271,53 @@
     }
 }
 
-.input-row__accordian{
+.input-row__accordian {
     display: flex;
     flex-direction: column;
     gap: 20px;
     margin-bottom: 20px;
 }
 
+.input-row__pointers{
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+
+.drop-target {
+    position: relative;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 80px;
+    height: 50px;
+    padding: 4px 6px 6px;
+    transition: all 0.2s;
+    flex: 0.1;
+
+    &::before {
+        content: '\F603';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        font-size: 40px;
+        color: #ccc;
+        text-align: center;
+      }
+
+    input[type="file"] {
+        visibility: hidden;
+              
+    }
+
+      .image_preview {
+        width: 100%;
+        height: 100%;
+        background: no-repeat center;
+        background-size: contain;
+        position: relative;
+        z-index: 2;
+      }
+}

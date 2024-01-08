@@ -829,6 +829,119 @@ const InputField = React.memo((props) => {
         </div>
       </div>
     );
+  } else if (props.inputComponent === "pointersWithIcons") {
+    const [pointers, setPointers] = useState([{ icon: null, title: "" }]);
+
+    const handleAddPointer = useCallback(() => {
+      setPointers((prevPointers) => {
+        const newPointers = [...prevPointers, { icon: null, title: "" }];
+        props.setValue(props.name, newPointers);
+        return newPointers;
+      });
+    }, [props.name, props.setValue]);
+
+    const handleDeletePointer = useCallback(
+      (index) => {
+        setPointers((prevPointers) => {
+          const newPointers = prevPointers.filter((_, i) => i !== index);
+          props.setValue(props.name, newPointers);
+          return newPointers;
+        });
+      },
+      [props.name, props.setValue]
+    );
+
+    const handleInputBlur = useCallback(
+      (index, value, type) => {
+        setPointers((prevPointers) => {
+          const newPointers = [...prevPointers];
+          newPointers[index][type] = value;
+          // If the type is "icon" and there's an image_preview element, update it
+          if (type === "icon") {
+            const imagePreviewElement = document.querySelector(
+              `#imagePreview-${index}`
+            );
+            if (imagePreviewElement && value) {
+              imagePreviewElement.style.backgroundImage = `url(${URL.createObjectURL(
+                value
+              )})`;
+            }
+          }
+          props.setValue(props.name, newPointers);
+          return newPointers;
+        });
+      },
+      [props.name, props.setValue]
+    );
+
+    const handleDropTargetClick = (index) => {
+      const inputFile = document.getElementById(`inputFile-${index}`);
+      if (inputFile) {
+        inputFile.click();
+      }
+    };
+
+    const renderPoints = useMemo(
+      () =>
+        pointers.map((point, index) => (
+          <>
+            <div key={`point-${index}`} className="input-row__pointers">
+              <div
+                className="drop-target"
+                onClick={() => handleDropTargetClick(index)}
+              >
+                <div
+                  id={`imagePreview-${index}`}
+                  className="image_preview"
+                ></div>
+                <input
+                  id={`inputFile-${index}`}
+                  type="file"
+                  onChange={(e) => {
+                    handleInputBlur(index, e.target.files[0], "icon");
+                  }}
+                />
+              </div>
+              <div style={{ flex: 1 }}>
+                <input
+                  type="text"
+                  placeholder={`Point ${index + 1}`}
+                  defaultValue={point.title}
+                  style={{
+                    width: "100%",
+                  }}
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  handleDeletePointer(index);
+                }}
+                style={{
+                  border: "none",
+                  background: "none",
+                }}
+              >
+                <i
+                  className="fa-solid fa-xmark"
+                  style={{ color: "red", fontSize: "20px" }}
+                ></i>{" "}
+              </button>
+            </div>
+          </>
+        )),
+      [pointers, handleAddPointer, handleInputBlur, handleDeletePointer]
+    );
+
+    return (
+      <>
+        {renderPoints}
+        <button type="button" onClick={handleAddPointer}>
+          <i className="fa fa-plus" aria-hidden="true" />{" "}
+          {props.addButtonText ? props.addButtonText : "Add Point"}
+        </button>
+      </>
+    );
   }
 });
 
