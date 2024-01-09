@@ -63,6 +63,7 @@ const AddServices = React.memo(() => {
           `${import.meta.env.VITE_API_URL}/api/v1/admin/services/`,
           data
         );
+        console.log(data);
         reset({
           isChildService: false,
           parentService: "",
@@ -158,6 +159,20 @@ const AddServices = React.memo(() => {
                 className="full-width-input"
               />
             )}
+            
+            <InputBox
+              htmlFor="serviceBanner"
+              label="Service Banner"
+              name="serviceBanner"
+              control={control}
+              placeholder="Service Banner"
+              setValue={setValue}
+              inputComponent="forminput"
+              id="serviceBanner"
+              errors={errors}
+              defaultValue=""
+              className="full-width-input"
+            />
 
             <InputBox
               htmlFor="serviceTitle"

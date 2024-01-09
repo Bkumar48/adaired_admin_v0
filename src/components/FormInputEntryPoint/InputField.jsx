@@ -910,6 +910,7 @@ const InputField = React.memo((props) => {
                   style={{
                     width: "100%",
                   }}
+                  onBlur={(e) => handleInputBlur(index, e.target.value, "title")}
                 />
               </div>
               <button
