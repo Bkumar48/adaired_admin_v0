@@ -44,7 +44,7 @@ const InputBox = React.memo((props) => {
 const AddServices = React.memo(() => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  // const [isChildService, setIsChildService] = useState(false);
+  const [isChildService, setIsChildService] = useState(false);
   const [mainServices, setMainServices] = useState([]);
   const {
     handleSubmit,
@@ -95,7 +95,6 @@ const AddServices = React.memo(() => {
 
   const handleChildChange = useCallback(
     async (e) => {
-      // setIsChildService(e.target.checked);
       if (e.target.checked) {
         try {
           const response = await axios.get(
@@ -104,11 +103,13 @@ const AddServices = React.memo(() => {
             }/api/v1/admin/services/?allParent=true`
           );
           setMainServices(response.data.data);
+          setIsChildService(true);
         } catch (error) {
           console.log(error);
         }
       } else {
         setMainServices([]);
+        setIsChildService(false);
       }
     },
     [setMainServices]
@@ -154,25 +155,27 @@ const AddServices = React.memo(() => {
                 defaultValue=""
                 options={mainServices.map((service) => ({
                   value: service._id,
-                  label: service.serviceTitle,
+                  label: service.serviceBanner,
                 }))}
                 className="full-width-input"
               />
             )}
-            
-            <InputBox
-              htmlFor="serviceBanner"
-              label="Service Banner"
-              name="serviceBanner"
-              control={control}
-              placeholder="Service Banner"
-              setValue={setValue}
-              inputComponent="forminput"
-              id="serviceBanner"
-              errors={errors}
-              defaultValue=""
-              className="full-width-input"
-            />
+
+            {isChildService === false && (
+              <InputBox
+                htmlFor="serviceBanner"
+                label="Service Banner"
+                name="serviceBanner"
+                control={control}
+                placeholder="Service Banner"
+                setValue={setValue}
+                inputComponent="forminput"
+                id="serviceBanner"
+                errors={errors}
+                defaultValue=""
+                className="full-width-input"
+              />
+            )}
 
             <InputBox
               htmlFor="serviceTitle"
