@@ -790,7 +790,7 @@ const InputField = React.memo((props) => {
 
                 {field.hasOwnProperty("editorValue") && (
                   <div className="input-row__editor">
-                    <JoditEditor
+                    {/* <JoditEditor
                       value={field.editorValue}
                       onBlur={(value) => {
                         const newFields = [...combinedFields];
@@ -801,6 +801,29 @@ const InputField = React.memo((props) => {
                       onChange={props.onChange}
                       config={props.config}
                       tabIndex={props.tabIndex}
+                      name={props.name}
+                    /> */}
+                    <Editor
+                      apiKey="720nkcx75ws79fcln5kf33j5klsu2vkzoeqowjjuu3axulkt"
+                      init={{
+                        plugins:
+                          "tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss",
+                        toolbar:
+                          "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
+                        tinycomments_mode: "embedded",
+                        tinycomments_author: "Bittu Kumar",
+                        mergetags_list: [
+                          { value: "First.Name", title: "First Name" },
+                          { value: "Email", title: "Email" },
+                        ],
+                      }}
+                      onEditorChange={(content) => {
+                        const newFields = [...combinedFields];
+                        newFields[index].editorValue = content;
+                        props.setValue(props.name, newFields);
+                        setCombinedFields(newFields);
+                      }}
+                      value={field.editorValue}
                       name={props.name}
                     />
                   </div>

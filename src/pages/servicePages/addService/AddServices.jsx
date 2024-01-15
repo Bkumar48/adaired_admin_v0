@@ -59,10 +59,10 @@ const AddServices = React.memo(() => {
       try {
         setLoading(true);
         setError(null);
-        // await axios.post(
-        //   `${import.meta.env.VITE_API_URL}/api/v1/admin/services/`,
-        //   data
-        // );
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/api/v1/admin/services/`,
+          data
+        );
         console.log(data);
         reset({
           isChildService: false,
