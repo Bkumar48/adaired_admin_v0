@@ -60,7 +60,7 @@ const AddServices = React.memo(() => {
         setLoading(true);
         setError(null);
         await axios.post(
-          `${import.meta.env.VITE_API_URL}/api/v1/admin/services/`,
+          `${import.meta.env.VITE_API_URL}/api/v1/services/`,
           data
         );
         console.log(data);
@@ -68,6 +68,7 @@ const AddServices = React.memo(() => {
           isChildService: false,
           parentService: "",
           serviceTitle: "",
+          slug: "",
           serviceDescription: "",
           serviceImage: "",
           serviceDescriptionII: "",
@@ -100,7 +101,7 @@ const AddServices = React.memo(() => {
           const response = await axios.get(
             `${
               import.meta.env.VITE_API_URL
-            }/api/v1/admin/services/?allParent=true`
+            }/api/v1/services/?allParent=true`
           );
           setMainServices(response.data.data);
           setIsChildService(true);
@@ -144,13 +145,13 @@ const AddServices = React.memo(() => {
               <InputBox
                 htmlFor="parentService"
                 label="Parent Service"
-                name="parentService"
+                name="parentId"
                 control={control}
                 placeholder="Parent Service"
                 setValue={setValue}
                 inputComponent="forminput"
                 type="select"
-                id="parentService"
+                id="parentId"
                 errors={errors}
                 defaultValue=""
                 options={mainServices.map((service) => ({
@@ -176,6 +177,20 @@ const AddServices = React.memo(() => {
                 className="full-width-input"
               />
             )}
+
+            <InputBox
+              htmlFor="slug"
+              label="Slug"
+              name="slug"
+              control={control}
+              placeholder="Slug"
+              setValue={setValue}
+              inputComponent="forminput"
+              id="slug"
+              errors={errors}
+              defaultValue=""
+              className="full-width-input"
+            />
 
             <InputBox
               htmlFor="serviceTitle"

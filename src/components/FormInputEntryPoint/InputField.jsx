@@ -54,7 +54,9 @@ const InputField = React.memo((props) => {
         <>
           <select
             className={props.className}
-            onChange={(e) => props.setValue(props.name, e.target.value)}
+            onChange={(e) => {
+              props.setValue(props.name, e.target.value);
+            }}
           >
             <option value="">Select {props.label}</option>
             {props.options
@@ -168,7 +170,7 @@ const InputField = React.memo((props) => {
             <div className="image-upload-button-container image-upload-button-view-full">
               <input
                 type="file"
-                accept="image/png, image/jpg, image/jpeg"
+                accept="image/png, image/jpg, image/jpeg, image/webp"
                 onChange={handleInputChange}
                 className="image-upload-button"
               />
@@ -725,7 +727,7 @@ const InputField = React.memo((props) => {
                       <div className="image-upload-button-container image-upload-button-view-full">
                         <input
                           type="file"
-                          accept="image/png, image/jpg, image/jpeg"
+                          accept="image/png, image/jpg, image/jpeg, image/webp"
                           onChange={(e) => {
                             handleImageChange(index, e.target.files[0]);
                           }}
