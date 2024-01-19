@@ -165,25 +165,52 @@
     ]
   },
   {
-    "to":"main-services",
-    "icon":"fa-solid fa-bag-shopping",
-    "title":"Service Pages",
-    "sub":[
+    "to": "main-services",
+    "icon": "fa-solid fa-bag-shopping",
+    "title": "Service Pages",
+    "sub": [
       {
-        "to":"all-services",
-        "icon":"fa-solid fa-house",
-        "title":"All Services"
+        "to": "all-services",
+        "icon": "fa-solid fa-house",
+        "title": "All Services"
       },
       {
-        "to":"add-service",
-        "icon":"fa-solid fa-house",
-        "title":"Add New Service"
+        "to": "add-service",
+        "icon": "fa-solid fa-house",
+        "title": "Add New Service"
       }
     ]
   },
   {
     "type": "heading",
     "title": "Interactions"
+  },
+  {
+    "to": "case-studies",
+    "icon": "fa-solid fa-bag-shopping",
+    "title": "Case Studies",
+    "sub": [
+      {
+        "to": "all-case-studies",
+        "icon": "fa-solid fa-house",
+        "title": "All Case Studies"
+      },
+      {
+        "to": "add-case-study",
+        "icon": "fa-solid fa-house",
+        "title": "Add New Case Study"
+      },
+      {
+        "to": "all-case-study-categories",
+        "icon": "fa-solid fa-house",
+        "title": "All Categories"
+      },
+      {
+        "to": "add-case-study-category",
+        "icon": "fa-solid fa-house",
+        "title": "Add New Category"
+      }
+    ]
   },
   {
     "to": "blogs",

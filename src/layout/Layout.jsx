@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy, useState, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+
 // Higher-order component for lazy loading
 const lazyComponent = (importStatement) => lazy(() => import(importStatement));
 
@@ -30,15 +31,22 @@ const AllServices = lazyComponent(
 );
 const AddServices = lazyComponent(
   "../pages/servicePages/addService/AddServices"
-  );
-  const Loader = lazyComponent("../components/loader/Loader");
+);
+const Loader = lazyComponent("../components/loader/Loader");
 
-  // Blogs and Blogs Categories
-  const AddBlog = lazyComponent("../pages/blogs/addBlog/AddBlog.jsx");
-  const EditBlog = lazyComponent("../pages/blogs/editBlog/EditBlog.jsx");
-  const AllBlogs = lazyComponent("../pages/blogs/allBlogs/AllBlogs");
-  const AllBlogsCategories = lazyComponent("../pages/blogs/allBlogCategories/AllBlogCategories");
-  
+// Blogs and Blogs Categories
+const AddBlog = lazyComponent("../pages/blogs/addBlog/AddBlog.jsx");
+const EditBlog = lazyComponent("../pages/blogs/editBlog/EditBlog.jsx");
+const AllBlogs = lazyComponent("../pages/blogs/allBlogs/AllBlogs");
+const AllBlogsCategories = lazyComponent(
+  "../pages/blogs/allBlogCategories/AllBlogCategories"
+);
+
+// Case Studies
+const AddCaseStudyCategory = lazyComponent(
+  "../pages/caseStudies/category/AddCategory.jsx"
+);
+
 const Layout = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -129,4 +137,6 @@ const dashboardRoutes = [
   { path: "edit-blog", element: <EditBlog /> },
   { path: "all-blogs", element: <AllBlogs /> },
   { path: "all-blog-categories", element: <AllBlogsCategories /> },
+  // Case Studies paths
+  { path: "add-case-study-category", element: <AddCaseStudyCategory /> },
 ];

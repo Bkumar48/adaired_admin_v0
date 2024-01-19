@@ -24,7 +24,6 @@ const InputField = React.memo((props) => {
               name: props.name,
             }}
           />
-          {props.error && <p className="error">{props.error}</p>}
         </>
       );
     } else if (props.type === "textarea") {
@@ -46,7 +45,6 @@ const InputField = React.memo((props) => {
               resize: "vertical",
             }}
           />
-          {props.error && <p className="error">{props.error}</p>}
         </>
       );
     } else if (props.type === "select") {
@@ -67,8 +65,6 @@ const InputField = React.memo((props) => {
                 ))
               : null}
           </select>
-
-          {props.error && <p className="error">{props.error}</p>}
         </>
       );
     } else if (props.type === "checkbox") {
@@ -88,7 +84,6 @@ const InputField = React.memo((props) => {
             <div className="knobs"></div>
             <div className="layer"></div>
           </div>
-          {props.error && <p className="error">{props.error}</p>}
         </>
       );
     } else {
@@ -108,7 +103,6 @@ const InputField = React.memo((props) => {
             type={props.type}
             {...props.field}
           />
-          {props.error && <p className="error">{props.error}</p>}
         </>
       );
     }
@@ -133,8 +127,6 @@ const InputField = React.memo((props) => {
           value={props.field?.value}
           name={props.name}
         />
-
-        {props.error && <p className="error">{props.error}</p>}
       </>
     );
   } else if (props.inputComponent === "imageUploader") {
@@ -683,30 +675,6 @@ const InputField = React.memo((props) => {
                   index % 2 === 0 ? "even" : "odd"
                 }`}
               >
-                {/* <div className={`input-row__image display-box`}>
-                  
-                  <div className="icon-text-box">
-                    <div className="upload-icon">
-                      <i className="fa fa-upload" aria-hidden="true" />
-                    </div>
-                    <div className="upload-text">
-                      {field.combinedSectionImage ? (
-                        <h4>{field.combinedSectionImage.name}</h4>
-                      ) : (
-                        <h4>Choose Files to Upload</h4>
-                      )}
-                    </div>
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      handleImageChange(index, e.target.files[0]);
-                    }}
-                    className="upload-image-input"
-                  />
-                </div> */}
-
                 <div className="image-uploader">
                   <input
                     type="text"
@@ -792,19 +760,6 @@ const InputField = React.memo((props) => {
 
                 {field.hasOwnProperty("editorValue") && (
                   <div className="input-row__editor">
-                    {/* <JoditEditor
-                      value={field.editorValue}
-                      onBlur={(value) => {
-                        const newFields = [...combinedFields];
-                        newFields[index].editorValue = value;
-                        props.setValue(props.name, newFields);
-                        setCombinedFields(newFields);
-                      }}
-                      onChange={props.onChange}
-                      config={props.config}
-                      tabIndex={props.tabIndex}
-                      name={props.name}
-                    /> */}
                     <Editor
                       apiKey="720nkcx75ws79fcln5kf33j5klsu2vkzoeqowjjuu3axulkt"
                       init={{
