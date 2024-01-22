@@ -3,8 +3,12 @@ import "react-phone-input-2/lib/style.css";
 import "./InputField.scss";
 import { Editor } from "@tinymce/tinymce-react";
 const PhoneInput = lazy(() => import("react-phone-input-2"));
+import Select from "react-select";
+import makeAnimated from "react-select/animated";
 
 const InputField = React.memo((props) => {
+  const animatedComponents = makeAnimated();
+
   if (props.inputComponent === "forminput") {
     if (props.type === "tel") {
       return (
@@ -44,17 +48,20 @@ const InputField = React.memo((props) => {
             style={{
               resize: "vertical",
             }}
+            {...props.field}
           />
         </>
       );
     } else if (props.type === "select") {
       return (
         <>
-          <select
-            className={props.className}
+          {/* <select
+            className={`${props.className} multiple-select`}
             onChange={(e) => {
               props.setValue(props.name, e.target.value);
+              props.onChange;
             }}
+            multiple={props.multiple}
           >
             <option value="">Select {props.label}</option>
             {props.options
@@ -64,7 +71,15 @@ const InputField = React.memo((props) => {
                   </option>
                 ))
               : null}
-          </select>
+          </select> */}
+          <Select
+            closeMenuOnSelect={props.closeMenuOnSelect}
+            components={animatedComponents}
+            defaultValue={props.defaultValue}
+            isMulti={props.multiple}
+            options={props.options}
+            onChange={props.onChange}
+          />
         </>
       );
     } else if (props.type === "checkbox") {
@@ -446,7 +461,9 @@ const InputField = React.memo((props) => {
               <div className={`input-row__title`}>
                 <input
                   type="text"
-                  placeholder={`Title ${index + 1}`}
+                  placeholder={
+                    `${props.placeholder} ${index + 1}` || `Title ${index + 1}`
+                  }
                   defaultValue={accordian.title}
                   onBlur={(e) =>
                     handleInputBlur(index, e.target.value, "title")
@@ -907,7 +924,9 @@ const InputField = React.memo((props) => {
                 <input
                   type="text"
                   // placeholder={`Point ${index + 1}`}
-                  placeholder={props.placeholder ? props.placeholder : `Point ${index + 1}` }
+                  placeholder={
+                    props.placeholder ? props.placeholder : `Point ${index + 1}`
+                  }
                   defaultValue={point.title}
                   style={{
                     width: "100%",
@@ -942,6 +961,262 @@ const InputField = React.memo((props) => {
       <>
         {renderPoints}
         <button type="button" onClick={handleAddPointer}>
+          <i className="fa fa-plus" aria-hidden="true" />{" "}
+          {props.addButtonText ? props.addButtonText : "Add Point"}
+        </button>
+      </>
+    );
+  } else if (props.inputComponent === "growthBox") {
+    const [growthBoxes, setGrowthBoxes] = useState([
+      { image: null, title: "", percentage: "", description: "" },
+    ]);
+
+    const handleAddGrowthBox = useCallback(() => {
+      setGrowthBoxes((prevGrowthBoxes) => {
+        const newGrowthBoxes = [
+          ...prevGrowthBoxes,
+          { image: null, title: "", percentage: "", description: "" },
+        ];
+        props.setValue(props.name, newGrowthBoxes);
+        return newGrowthBoxes;
+      });
+    }, [props.name, props.setValue]);
+
+    const handleDeleteGrowthBox = useCallback(
+      (index) => {
+        setGrowthBoxes((prevGrowthBoxes) => {
+          const newGrowthBoxes = prevGrowthBoxes.filter((_, i) => i !== index);
+          props.setValue(props.name, newGrowthBoxes);
+          return newGrowthBoxes;
+        });
+      },
+      [props.name, props.setValue]
+    );
+
+    const handleInputBlur = useCallback(
+      (index, value, type) => {
+        setGrowthBoxes((prevGrowthBoxes) => {
+          const newGrowthBoxes = [...prevGrowthBoxes];
+          newGrowthBoxes[index][type] = value;
+          // If the type is "icon" and there's an image_preview element, update it
+          if (type === "image") {
+            const imagePreviewElement = document.querySelector(
+              `#imagePreview-${index}`
+            );
+            if (imagePreviewElement && value) {
+              imagePreviewElement.style.backgroundImage = `url(${URL.createObjectURL(
+                value
+              )})`;
+            }
+          }
+          props.setValue(props.name, newGrowthBoxes);
+          return newGrowthBoxes;
+        });
+      },
+      [props.name, props.setValue]
+    );
+
+    const handleDropTargetClick = (index) => {
+      const inputFile = document.getElementById(`inputFile-${index}`);
+      if (inputFile) {
+        inputFile.click();
+      }
+    };
+
+    const renderBox = useMemo(
+      () =>
+        growthBoxes.map((box, index) => (
+          <div key={`box-${index}`}>
+            <div className="input-row__growth-box">
+              <div
+                className="drop-target"
+                onClick={() => handleDropTargetClick(index)}
+              >
+                <div
+                  id={`imagePreview-${index}`}
+                  className="image_preview"
+                ></div>
+                <input
+                  id={`inputFile-${index}`}
+                  type="file"
+                  onChange={(e) => {
+                    handleInputBlur(index, e.target.files[0], "image");
+                  }}
+                />
+              </div>
+              <div>
+                <input
+                  type="text"
+                  // placeholder={`Point ${index + 1}`}
+                  placeholder={
+                    props.placeholder ? props.placeholder : `Title ${index + 1}`
+                  }
+                  defaultValue={box.title}
+                  style={{
+                    width: "100%",
+                  }}
+                  onBlur={(e) =>
+                    handleInputBlur(index, e.target.value, "title")
+                  }
+                />
+                <input
+                  type="text"
+                  // placeholder={`Point ${index + 1}`}
+                  placeholder={
+                    props.placeholder
+                      ? props.placeholder
+                      : `Percentage ${index + 1}`
+                  }
+                  defaultValue={box.percentage}
+                  style={{
+                    width: "100%",
+                  }}
+                  onBlur={(e) =>
+                    handleInputBlur(index, e.target.value, "percentage")
+                  }
+                />
+                <input
+                  type="text"
+                  // placeholder={`Point ${index + 1}`}
+                  placeholder={
+                    props.placeholder
+                      ? props.placeholder
+                      : `Description ${index + 1}`
+                  }
+                  defaultValue={box.description}
+                  style={{
+                    width: "100%",
+                  }}
+                  onBlur={(e) =>
+                    handleInputBlur(index, e.target.value, "description")
+                  }
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  handleDeleteGrowthBox(index);
+                }}
+                style={{
+                  border: "none",
+                  background: "none",
+                }}
+              >
+                <i
+                  className="fa-solid fa-xmark"
+                  style={{ color: "red", fontSize: "20px" }}
+                ></i>{" "}
+              </button>
+            </div>
+          </div>
+        )),
+      [growthBoxes, handleAddGrowthBox, handleInputBlur, handleDeleteGrowthBox]
+    );
+
+    return (
+      <>
+        {renderBox}
+        <button type="button" onClick={handleAddGrowthBox}>
+          <i className="fa fa-plus" aria-hidden="true" />{" "}
+          {props.addButtonText ? props.addButtonText : "Add Box"}
+        </button>
+      </>
+    );
+  } else if (props.inputComponent === "accordionWithoutRichtext") {
+    const [accordians, setAccordians] = useState([{ title: "", content: "" }]);
+
+    const handleAddAccordian = useCallback(() => {
+      setAccordians((prevAccordians) => {
+        const newAccordians = [...prevAccordians, { title: "", content: "" }];
+        props.setValue(props.name, newAccordians);
+        return newAccordians;
+      });
+    }, [props.name, props.setValue]);
+
+    const handleDeleteAccordian = useCallback(
+      (index) => {
+        setAccordians((prevAccordians) => {
+          const newAccordians = prevAccordians.filter((_, i) => i !== index);
+          props.setValue(props.name, newAccordians);
+          return newAccordians;
+        });
+      },
+      [props.name, props.setValue]
+    );
+
+    const handleInputBlur = useCallback(
+      (index, value, type) => {
+        setAccordians((prevAccordians) => {
+          const newAccordians = [...prevAccordians];
+          newAccordians[index][type] = value;
+          props.setValue(props.name, newAccordians);
+          return newAccordians;
+        });
+      },
+      [props.name, props.setValue]
+    );
+
+    return (
+      <>
+        <div
+          className="accordion-without-richtext"
+          style={{
+            display: "flex",
+            gap: "10px",
+          }}
+        >
+          {accordians.map((accordian, index) => (
+            <div
+              key={`accordian-${index}`}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "row",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  flexDirection: "column",
+                }}
+              >
+                <div className={`input-row__title`}>
+                  <input
+                    type="text"
+                    placeholder={`Title ${index + 1}`}
+                    defaultValue={accordian.title}
+                    onBlur={(e) =>
+                      handleInputBlur(index, e.target.value, "title")
+                    }
+                    className="full-width-input"
+                    name={`fourPoints-${index}`}
+                  />
+                </div>
+                <div className="input-row__content">
+                  <textarea
+                    placeholder={`Content ${index + 1}`}
+                    defaultValue={accordian.content}
+                    onBlur={(e) =>
+                      handleInputBlur(index, e.target.value, "content")
+                    }
+                    className="full-width-input"
+                    name={`fourPoints-${index}`}
+                  />
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleDeleteAccordian(index)}
+                className="dynamicPointsInput__btn dynamicPointsInput__delete"
+                key={`delete-${index}`}
+              >
+                <i className="fa-solid fa-trash"></i>
+              </button>
+            </div>
+          ))}
+        </div>
+        <button type="button" onClick={handleAddAccordian}>
           <i className="fa fa-plus" aria-hidden="true" />{" "}
           {props.addButtonText ? props.addButtonText : "Add Point"}
         </button>

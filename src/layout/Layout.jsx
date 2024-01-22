@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { Suspense, lazy, useState, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
+import AddCaseStudy from "../pages/caseStudies/caseStudy/AddCaseStudy";
 
 // Higher-order component for lazy loading
 const lazyComponent = (importStatement) => lazy(() => import(importStatement));
@@ -143,4 +144,5 @@ const dashboardRoutes = [
   // Case Studies paths
   { path: "add-case-study-category", element: <AddCaseStudyCategory /> },
   { path: "all-case-study-categories", element: <AllCaseStudyCategories /> },
+  { path: "add-case-study", element:<AddCaseStudy />}
 ];
