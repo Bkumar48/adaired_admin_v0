@@ -46,6 +46,9 @@ const AllBlogsCategories = lazyComponent(
 const AddCaseStudyCategory = lazyComponent(
   "../pages/caseStudies/category/AddCategory.jsx"
 );
+const AllCaseStudyCategories = lazyComponent(
+  "../pages/caseStudies/category/AllCategories.jsx"
+);
 
 const Layout = () => {
   const [loading, setLoading] = useState(true);
@@ -139,4 +142,5 @@ const dashboardRoutes = [
   { path: "all-blog-categories", element: <AllBlogsCategories /> },
   // Case Studies paths
   { path: "add-case-study-category", element: <AddCaseStudyCategory /> },
+  { path: "all-case-study-categories", element: <AllCaseStudyCategories /> },
 ];

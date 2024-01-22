@@ -906,7 +906,8 @@ const InputField = React.memo((props) => {
               <div style={{ flex: 1 }}>
                 <input
                   type="text"
-                  placeholder={`Point ${index + 1}`}
+                  // placeholder={`Point ${index + 1}`}
+                  placeholder={props.placeholder ? props.placeholder : `Point ${index + 1}` }
                   defaultValue={point.title}
                   style={{
                     width: "100%",

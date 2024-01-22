@@ -201,3 +201,7 @@ label {
 .tox-statusbar__branding{
     display: none !important;
 }
+
+.card-inner{
+    padding: 10px 20px;
+}
