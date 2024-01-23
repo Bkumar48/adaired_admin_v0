@@ -51,21 +51,43 @@ const AddCaseStudy = () => {
 
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  const handleCategoryChange = async (selectedCategory) => {
-    setSelectedCategory(selectedCategory);
+  const fetchCategoryData = (slug) => {
+    return axios.get(
+      `${
+        import.meta.env.VITE_API_URL
+      }/api/v1/case-studies-category/getCaseStudiesCategory/${slug}`
+    );
+  };
 
+  const {
+    data: categoryData,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["categorData"],
+    queryFn: fetchCategoryData,
+    enabled: false,
+  });
+
+  const handleCategoryChange = async (selectedCategory) => {
+    setValue("category", selectedCategory);
     try {
-      const response = await axios.get(
-        `${
-          import.meta.env.VITE_API_URL
-        }/api/v1/case-studies-category/getCaseStudiesCategory/${selectedCategory}`
-      );
-      const data = await response.data.result;
+      const data =
+        categoryData?.result ||
+        (await fetchCategoryData(selectedCategory)).data.result;
+      setSelectedCategory(data);
       return data;
     } catch (error) {
       console.log(error);
     }
   };
+
+  if (isLoading) {
+    return console.log("Loading...");
+  }
+  if (error) {
+    return console.log("Error");
+  }
 
   return (
     <div className="case-study">
@@ -94,6 +116,25 @@ const AddCaseStudy = () => {
               }))}
               className="full-width-input"
               closeMenuOnSelect="true"
+              onChange={(e) => {
+                handleCategoryChange(e.value);
+              }}
+            />
+
+            <InputBox
+              htmlFor="colorScheme"
+              label="Color Scheme"
+              name="colorScheme"
+              control={control}
+              placeholder="Select Color Scheme"
+              setValue={setValue}
+              inputComponent="forminput"
+              type="color"
+              id="colorScheme"
+              errors={errors}
+              defaultValue=""
+              className="full-width-input"
+
             />
 
             <InputBox
@@ -305,6 +346,17 @@ const AddCaseStudy = () => {
               multiple={true}
               className="full-width-input"
               closeMenuOnSelect="false"
+              options={selectedCategory?.technologies?.map((service) => ({
+                value: service._id,
+                label: service.title,
+              }))}
+              onChange={(e) => {
+                setValue(
+                  "technologiesUsed",
+                  e.map((item) => item.value)
+                );
+                console.log(e);
+              }}
             />
 
             <InputBox
@@ -347,7 +399,6 @@ const AddCaseStudy = () => {
                 inputComponent="accordion"
                 setValue={setValue}
                 id="objectives"
-                defaultValue=""
                 addButtonText="Add New Point"
                 className="full-width-input"
                 placeholder={"Objective"}
@@ -360,7 +411,6 @@ const AddCaseStudy = () => {
                 inputComponent="accordion"
                 setValue={setValue}
                 id="stratergy"
-                defaultValue=""
                 addButtonText="Add New Point"
                 className="full-width-input"
                 placeholder={"Stratergy"}

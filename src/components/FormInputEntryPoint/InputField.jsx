@@ -55,23 +55,6 @@ const InputField = React.memo((props) => {
     } else if (props.type === "select") {
       return (
         <>
-          {/* <select
-            className={`${props.className} multiple-select`}
-            onChange={(e) => {
-              props.setValue(props.name, e.target.value);
-              props.onChange;
-            }}
-            multiple={props.multiple}
-          >
-            <option value="">Select {props.label}</option>
-            {props.options
-              ? props.options.map((option, index) => (
-                  <option key={index} value={option.value}>
-                    {option.label}
-                  </option>
-                ))
-              : null}
-          </select> */}
           <Select
             closeMenuOnSelect={props.closeMenuOnSelect}
             components={animatedComponents}

@@ -80,6 +80,11 @@ input[type=tel] {
     padding-left: 3rem;
 }
 
+input[type=color] {
+    padding: 0;
+
+}
+
 label {
     margin-bottom: 0.2rem;
     display: block;
@@ -198,10 +203,10 @@ label {
     }
 }
 
-.tox-statusbar__branding{
+.tox-statusbar__branding {
     display: none !important;
 }
 
-.card-inner{
+.card-inner {
     padding: 10px 20px;
 }
