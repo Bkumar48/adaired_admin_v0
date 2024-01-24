@@ -258,143 +258,7 @@ const InputField = React.memo((props) => {
       </div>
     );
   }
-  // else if (props.inputComponent === "combinedfield") {
-  //   const [combinedFields, setCombinedFields] = useState([]);
 
-  //   const handleAddField = useCallback(() => {
-  //     setCombinedFields((prevFields) => {
-  //       const newFields = [...prevFields, { image: null, editorValue: "" }];
-  //       return newFields;
-  //     });
-  //   }, [props.name, props.setValue]);
-
-  //   const handleDeleteField = useCallback(
-  //     (index) => {
-  //       setCombinedFields((prevFields) => {
-  //         const newFields = prevFields.filter((_, i) => i !== index);
-
-  //         props.setValue(props.name, newFields);
-  //         return newFields;
-  //       });
-  //     },
-  //     [props.name, props.setValue]
-  //   );
-
-  //   const handleInputBlur = useCallback(
-  //     (index, value) => {
-  //       setCombinedFields((prevFields) => {
-  //         const newFields = [...prevFields];
-  //         newFields[index].editorValue = value;
-  //         props.setValue(props.name, newFields);
-  //         return newFields;
-  //       });
-  //     },
-  //     [props.name, props.setValue]
-  //   );
-
-  //   const handleImageChange = useCallback(
-  //     (index, image) => {
-  //       setCombinedFields((prevFields) => {
-  //         const newFields = [...prevFields];
-  //         newFields[index].image = image;
-  //         props.setValue(props.name, newFields);
-  //         return newFields;
-  //       });
-  //     },
-  //     [props.name, props.setValue]
-  //   );
-
-  //   const renderCombinedFields = useMemo(
-  //     () =>
-  //       combinedFields.map((field, index) => (
-  //         <>
-  //           <button
-  //             type="button"
-  //             onClick={() => handleDeleteField(index)}
-  //             className="dynamicPointsInput__btn dynamicPointsInput__delete"
-  //             style={{ float: "right" }}
-  //             key={`delete-${index}`}
-  //           >
-  //             <i className="fa-solid fa-trash"></i>
-  //           </button>
-  //           <div
-  //             key={`field-${index}`}
-  //             className={`input-row input-row__combinedField ${
-  //               index % 2 === 0 ? "even" : "odd"
-  //             }`}
-  //           >
-  //             <div className={`input-row__image display-box`}>
-  //               <div className="icon-text-box">
-  //                 <div className="upload-icon">
-  //                   <i className="fa fa-upload" aria-hidden="true" />
-  //                 </div>
-  //                 <div className="upload-text">
-  //                   {field.image ? (
-  //                     <h4>{field.image.name}</h4>
-  //                   ) : (
-  //                     <h4>Choose Files to Upload</h4>
-  //                   )}
-  //                 </div>
-  //               </div>
-  //               <input
-  //                 type="file"
-  //                 accept="image/*"
-  //                 onChange={(e) => handleImageChange(index, e.target.files[0])}
-  //                 className="upload-image-input"
-  //               />
-  //             </div>
-  //             <div className="input-row__editor">
-  //               {/* <JoditEditor
-  //                 value={field.editorValue}
-  //                 onBlur={(value) => handleInputBlur(index, value)}
-  //                 onChange={props.onChange}
-  //                 config={props.config}
-  //                 tabIndex={props.tabIndex}
-  //                 name={props.name}
-  //               /> */}
-  //               <Editor
-  //                 apiKey="720nkcx75ws79fcln5kf33j5klsu2vkzoeqowjjuu3axulkt"
-  //                 init={{
-  //                   plugins:
-  //                     "tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss",
-  //                   toolbar:
-  //                     "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
-  //                   tinycomments_mode: "embedded",
-  //                   tinycomments_author: "Author name",
-  //                   mergetags_list: [
-  //                     { value: "First.Name", title: "First Name" },
-  //                     { value: "Email", title: "Email" },
-  //                   ],
-  //                 }}
-  //                 onEditorChange={(content) => handleInputBlur(index, content)}
-  //               />
-  //             </div>
-  //           </div>
-  //         </>
-  //       )),
-  //     [
-  //       combinedFields,
-  //       handleAddField,
-  //       handleInputBlur,
-  //       handleDeleteField,
-  //       handleImageChange,
-  //     ]
-  //   );
-
-  //   return (
-  //     <div>
-  //       {renderCombinedFields}
-  //       <button
-  //         type="button"
-  //         className="dynamicPointsInput__btn dynamicPointsInput__add"
-  //         onClick={handleAddField}
-  //       >
-  //         <i className="fa fa-plus" aria-hidden="true" />{" "}
-  //         {props.addButtonText ? props.addButtonText : "Add Field"}
-  //       </button>
-  //     </div>
-  //   );
-  // }
   else if (props.inputComponent === "accordion") {
     const [accordians, setAccordians] = useState([{ title: "", content: "" }]);
 
@@ -876,7 +740,7 @@ const InputField = React.memo((props) => {
     );
 
     const handleDropTargetClick = (index) => {
-      const inputFile = document.getElementById(`inputFile-${index}`);
+      const inputFile = document.getElementById(`inputFile-imageBox-${index}`);
       if (inputFile) {
         inputFile.click();
       }
@@ -896,7 +760,7 @@ const InputField = React.memo((props) => {
                   className="image_preview"
                 ></div>
                 <input
-                  id={`inputFile-${index}`}
+                  id={`inputFile-imageBox-${index}`}
                   type="file"
                   onChange={(e) => {
                     handleInputBlur(index, e.target.files[0], "icon");
@@ -1202,6 +1066,146 @@ const InputField = React.memo((props) => {
         <button type="button" onClick={handleAddAccordian}>
           <i className="fa fa-plus" aria-hidden="true" />{" "}
           {props.addButtonText ? props.addButtonText : "Add Point"}
+        </button>
+      </>
+    );
+  } else if (props.inputComponent === "imageBox"){
+    const [imageBoxes, setImageBoxes] = useState([
+      { image: null, title: "", description: "" },
+    ]);
+
+    const handleAddImageBox = useCallback(() => {
+      setImageBoxes((prevImageBoxes) => {
+        const newImageBoxes = [
+          ...prevImageBoxes,
+          { image: null, title: "", description: "" },
+        ];
+        props.setValue(props.name, newImageBoxes);
+        return newImageBoxes;
+      });
+    }, [props.name, props.setValue]);
+
+    const handleDeleteImageBox = useCallback(
+      (index) => {
+        setImageBoxes((prevImageBoxes) => {
+          const newImageBoxes = prevImageBoxes.filter((_, i) => i !== index);
+          props.setValue(props.name, newImageBoxes);
+          return newImageBoxes;
+        });
+      },
+      [props.name, props.setValue]
+    );
+
+    const handleInputBlur = useCallback(
+      (index, value, type) => {
+        setImageBoxes((prevImageBoxes) => {
+          const newImageBoxes = [...prevImageBoxes];
+          newImageBoxes[index][type] = value;
+          // If the type is "icon" and there's an image_preview element, update it
+          if (type === "image") {
+            const imagePreviewElement = document.querySelector(
+              `#imagePreview-imageBox-${index}`
+            );
+            if (imagePreviewElement && value) {
+              imagePreviewElement.style.backgroundImage = `url(${URL.createObjectURL(
+                value
+              )})`;
+            }
+          }
+          props.setValue(props.name, newImageBoxes);
+          return newImageBoxes;
+        });
+      },
+      [props.name, props.setValue]
+    );
+
+    const handleDropTargetClick = (index) => {
+      const inputFile = document.getElementById(`inputFile-${index}`);
+      if (inputFile) {
+        inputFile.click();
+      }
+    };
+
+    const renderBox = useMemo(
+      () =>
+        imageBoxes.map((box, index) => (
+          <div key={`box-${index}`}>
+            <div className="input-row__growth-box">
+              <div
+                className="drop-target"
+                onClick={() => handleDropTargetClick(index)}
+              >
+                <div
+                  id={`imagePreview-imageBox-${index}`}
+                  className="image_preview"
+                ></div>
+                <input
+                  id={`inputFile-${index}`}
+                  type="file"
+                  onChange={(e) => {
+                    handleInputBlur(index, e.target.files[0], "image");
+                  }}
+                />
+              </div>
+              <div>
+                <input
+                  type="text"
+                  // placeholder={`Point ${index + 1}`}
+                  placeholder={
+                    props.placeholder ? props.placeholder : `Title ${index + 1}`
+                  }
+                  defaultValue={box.title}
+                  style={{
+                    width: "100%",
+                  }}
+                  onBlur={(e) =>
+                    handleInputBlur(index, e.target.value, "title")
+                  }
+                />
+                <input
+                  type="text"
+                  // placeholder={`Point ${index + 1}`}
+                  placeholder={
+                    props.placeholder
+                      ? props.placeholder
+                      : `Description ${index + 1}`
+                  }
+                  defaultValue={box.description}
+                  style={{
+                    width: "100%",
+                  }}
+                  onBlur={(e) =>
+                    handleInputBlur(index, e.target.value, "description")
+                  }
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  handleDeleteImageBox(index);
+                }}
+                style={{
+                  border: "none",
+                  background: "none",
+                }}
+              >
+                <i
+                  className="fa-solid fa-xmark"
+                  style={{ color: "red", fontSize: "20px" }}
+                ></i>{" "}
+              </button>
+            </div>
+          </div>
+        )),
+      [imageBoxes, handleAddImageBox, handleInputBlur, handleDeleteImageBox]
+    );
+
+    return (
+      <>
+        {renderBox}
+        <button type="button" onClick={handleAddImageBox}>
+          <i className="fa fa-plus" aria-hidden="true" />{" "}
+          {props.addButtonText ? props.addButtonText : "Add Box"}
         </button>
       </>
     );

@@ -64,27 +64,7 @@ const AddServices = React.memo(() => {
           data
         );
         console.log(data);
-        reset({
-          isChildService: false,
-          parentService: "",
-          serviceTitle: "",
-          slug: "",
-          serviceDescription: "",
-          serviceImage: "",
-          serviceDescriptionII: "",
-          serviceHeadingII: "",
-          serviceDescriptionIII: "",
-          fourPoints: [],
-          ourProcessSubHeading: "",
-          ourProcessImageI: "",
-          ourProcessImageII: "",
-          combinedSection: "",
-          serviceHeadingIII: "",
-          serviceDescriptionIV: "",
-          serviceNote: "",
-          LastSectionText: "",
-          LastSectionImage: "",
-        });
+        reset();
       } catch (error) {
         setError(`Something went wrong: ${error.message}`);
       } finally {
@@ -153,7 +133,6 @@ const AddServices = React.memo(() => {
                 type="select"
                 id="parentId"
                 errors={errors}
-                defaultValue=""
                 options={mainServices.map((service) => ({
                   value: service._id,
                   label: service.serviceBanner,
@@ -230,11 +209,11 @@ const AddServices = React.memo(() => {
               name="mainTwoPoints"
               control={control}
               setValue={setValue}
-              inputComponent="accordion"
+              inputComponent="imageBox"
               id="mainTwoPoints"
               errors={errors}
               defaultValue={[]}
-              onChange={(value) => setValue("mainTwoPoints", value)}
+              // onChange={(value) => setValue("mainTwoPoints", value)}
             />
 
             <InputBox
@@ -424,6 +403,19 @@ const AddServices = React.memo(() => {
               }}
             >
               <div>
+                <InputBox
+                  htmlFor="LastSectionSubHeading"
+                  label="Last Section Sub Heading"
+                  name="LastSectionSubHeading"
+                  control={control}
+                  placeholder="Last Section Sub Heading"
+                  setValue={setValue}
+                  inputComponent="forminput"
+                  id="LastSectionSubHeading"
+                  errors={errors}
+                  defaultValue=""
+                  className="full-width-input"
+                />
                 <InputBox
                   htmlFor="LastSectionHeading"
                   label="Last Section Heading"
