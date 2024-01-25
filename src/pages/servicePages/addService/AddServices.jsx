@@ -63,7 +63,7 @@ const AddServices = React.memo(() => {
           `${import.meta.env.VITE_API_URL}/api/v1/services/`,
           data
         );
-        console.log(data);
+        console.log(data);  
         reset();
       } catch (error) {
         setError(`Something went wrong: ${error.message}`);

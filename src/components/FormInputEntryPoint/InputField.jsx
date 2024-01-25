@@ -1,4 +1,4 @@
-import React, { lazy, useCallback, useState, useMemo, useRef } from "react";
+import React, { lazy, useCallback, useState, useMemo } from "react";
 import "react-phone-input-2/lib/style.css";
 import "./InputField.scss";
 import { Editor } from "@tinymce/tinymce-react";
@@ -111,7 +111,7 @@ const InputField = React.memo((props) => {
           apiKey="720nkcx75ws79fcln5kf33j5klsu2vkzoeqowjjuu3axulkt"
           init={{
             plugins:
-              "tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss",
+              "tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker   a11ychecker typography inlinecss",
             toolbar:
               "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
             tinycomments_mode: "embedded",
@@ -257,9 +257,7 @@ const InputField = React.memo((props) => {
         </button>
       </div>
     );
-  }
-
-  else if (props.inputComponent === "accordion") {
+  } else if (props.inputComponent === "accordion") {
     const [accordians, setAccordians] = useState([{ title: "", content: "" }]);
 
     const handleAddAccordian = useCallback(() => {
@@ -324,7 +322,7 @@ const InputField = React.memo((props) => {
                   apiKey="720nkcx75ws79fcln5kf33j5klsu2vkzoeqowjjuu3axulkt"
                   init={{
                     plugins:
-                      "tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss",
+                      "tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker   a11ychecker typography inlinecss",
                     toolbar:
                       "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
                     tinycomments_mode: "embedded",
@@ -364,7 +362,12 @@ const InputField = React.memo((props) => {
       </>
     );
   } else if (props.inputComponent === "combinedField") {
-    const [combinedFields, setCombinedFields] = useState([]);
+    const [combinedFields, setCombinedFields] = useState([
+      {
+        combinedSectionImage: "",
+        accordion: [{ title: "", content: "" }],
+      },
+    ]);
 
     const handleAddAccordionField = useCallback(() => {
       setCombinedFields((prevFields) => {
@@ -372,32 +375,35 @@ const InputField = React.memo((props) => {
           ...prevFields,
           {
             combinedSectionImage: "",
-            accordion: [{ title: "", content: "", heading: "" }],
+            accordion: [{ title: "", content: "" }],
           },
         ];
         return newFields;
       });
-    }, [props.name, props.setValue]);
+    }, []);
 
     const handleAddEditorField = useCallback(() => {
       setCombinedFields((prevFields) => {
         const newFields = [
           ...prevFields,
-          { combinedSectionImage: "", editorValue: "", heading: "" },
+          { combinedSectionImage: "", editorValue: "" },
         ];
         return newFields;
       });
-    }, [props.name, props.setValue]);
+    }, []);
 
-    const handleDeleteField = useCallback(
-      (index) => {
-        setCombinedFields((prevFields) => {
-          const newFields = prevFields.filter((_, i) => i !== index);
-          return newFields;
-        });
-      },
-      [props.name, props.setValue]
-    );
+    const readFileData = (file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          resolve(reader.result);
+        };
+        reader.onerror = () => {
+          reject("Something went wrong when reading the file");
+        };
+        reader.readAsDataURL(file);
+      });
+    };
 
     const handleImageChange = useCallback(
       (index, image) => {
@@ -418,21 +424,8 @@ const InputField = React.memo((props) => {
           });
         }
       },
-      [props.name, props.setValue]
+      [props, readFileData]
     );
-
-    const readFileData = (file) => {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          resolve(reader.result);
-        };
-        reader.onerror = () => {
-          reject("Something went wrong when reading the file");
-        };
-        reader.readAsDataURL(file);
-      });
-    };
 
     const handleInputBlur = useCallback(
       (fieldIndex, accordianIndex, value, type) => {
@@ -443,7 +436,19 @@ const InputField = React.memo((props) => {
           return newFields;
         });
       },
-      [props.name, props.setValue]
+      [props]
+    );
+
+    const handleDeleteAccordian = useCallback(
+      (fieldIndex, accordianIndex) => {
+        setCombinedFields((prevFields) => {
+          const newFields = [...prevFields];
+          newFields[fieldIndex].accordion.splice(accordianIndex, 1);
+          props.setValue(props.name, newFields);
+          return newFields;
+        });
+      },
+      [props]
     );
 
     const Accordian = ({
@@ -452,6 +457,7 @@ const InputField = React.memo((props) => {
       fieldIndex,
       accordianIndex,
       onInputBlur,
+      onDeleteAccordion,
     }) => {
       const handleInputBlur = useCallback(
         (value, type) => {
@@ -465,11 +471,7 @@ const InputField = React.memo((props) => {
           <div className={`input-row__accordian`}>
             <button
               type="button"
-              onClick={() => {
-                const newFields = [...combinedFields];
-                newFields[fieldIndex].accordion.splice(accordianIndex, 1);
-                setCombinedFields(newFields);
-              }}
+              onClick={() => onDeleteAccordion(fieldIndex, accordianIndex)}
               className="dynamicPointsInput__btn "
             >
               <i className="fa-solid fa-trash"></i> Delete Accordian
@@ -485,28 +487,20 @@ const InputField = React.memo((props) => {
               />
             </div>
             <div className="input-row__content">
+              <div id="richtext-toolbar"></div>
               <Editor
                 apiKey="720nkcx75ws79fcln5kf33j5klsu2vkzoeqowjjuu3axulkt"
                 init={{
                   plugins:
-                    "tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss",
+                    "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
                   toolbar:
-                    "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
-                  tinycomments_mode: "embedded",
-                  tinycomments_author: "Author name",
-                  mergetags_list: [
-                    { value: "First.Name", title: "First Name" },
-                    { value: "Email", title: "Email" },
-                  ],
+                    "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
                 }}
                 onEditorChange={(content) => {
-                  const newFields = [...combinedFields];
-                  newFields[fieldIndex].accordion[accordianIndex].content =
-                    content;
-                  setCombinedFields(newFields);
+                  handleInputBlur(content, "content");
                 }}
                 value={content}
-                name={props.name}
+                name={`editor-${fieldIndex}-${accordianIndex}`}
               />
             </div>
           </div>
@@ -605,6 +599,7 @@ const InputField = React.memo((props) => {
                         fieldIndex={index}
                         accordianIndex={accordianIndex}
                         onInputBlur={handleInputBlur}
+                        onDeleteAccordion={handleDeleteAccordian}
                       />
                       <button
                         type="button"
@@ -628,7 +623,7 @@ const InputField = React.memo((props) => {
                       apiKey="720nkcx75ws79fcln5kf33j5klsu2vkzoeqowjjuu3axulkt"
                       init={{
                         plugins:
-                          "tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker autocorrect a11ychecker typography inlinecss",
+                          "tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker   a11ychecker typography inlinecss",
                         toolbar:
                           "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
                         tinycomments_mode: "embedded",
@@ -653,14 +648,7 @@ const InputField = React.memo((props) => {
             </div>
           </>
         )),
-      [
-        combinedFields,
-        handleDeleteField,
-        handleImageChange,
-
-        handleInputBlur,
-        props,
-      ]
+      [combinedFields, handleImageChange, handleInputBlur, props]
     );
     return (
       <div>
@@ -1069,7 +1057,7 @@ const InputField = React.memo((props) => {
         </button>
       </>
     );
-  } else if (props.inputComponent === "imageBox"){
+  } else if (props.inputComponent === "imageBox") {
     const [imageBoxes, setImageBoxes] = useState([
       { image: null, title: "", description: "" },
     ]);
