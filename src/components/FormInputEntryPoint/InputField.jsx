@@ -100,6 +100,7 @@ const InputField = React.memo((props) => {
             onBlur={props.onBlur}
             name={props.name}
             type={props.type}
+            min={props.min}
             {...props.field}
           />
         </>

@@ -213,6 +213,23 @@
     ]
   },
   {
+    "to": "career",
+    "icon": "fa-solid fa-bag-shopping",
+    "title": "Career",
+    "sub": [
+      {
+        "to": "all-jobs",
+        "icon": "fa-solid fa-house",
+        "title": "All Jobs"
+      },
+      {
+        "to": "add-job",
+        "icon": "fa-solid fa-house",
+        "title": "Add New Job"
+      }
+    ]
+  },
+  {
     "to": "blogs",
     "icon": "fa-solid fa-blog",
     "title": "Blogs",

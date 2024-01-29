@@ -51,6 +51,9 @@ const AllCaseStudyCategories = lazyComponent(
   "../pages/caseStudies/category/AllCategories.jsx"
 );
 
+// Careers
+const AddJob = lazyComponent("../pages/careerPage/AddJob.jsx");
+
 const Layout = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -144,5 +147,7 @@ const dashboardRoutes = [
   // Case Studies paths
   { path: "add-case-study-category", element: <AddCaseStudyCategory /> },
   { path: "all-case-study-categories", element: <AllCaseStudyCategories /> },
-  { path: "add-case-study", element:<AddCaseStudy />}
+  { path: "add-case-study", element: <AddCaseStudy /> },
+  // Careers
+  { path: "add-job", element: <AddJob /> },
 ];
