@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import Cards from "../../../components/card/Cards";
 import InputBox from "./../../../components/FormInputEntryPoint/InputBox";
 import { useState } from "react";
+import { Input } from "react-select/animated";
 
 axios.defaults.headers.common = {
   ...axios.defaults.headers.common,
@@ -134,7 +135,20 @@ const AddCaseStudy = () => {
               errors={errors}
               defaultValue=""
               className="full-width-input"
+            />
 
+            <InputBox
+              htmlFor="cardImage"
+              label="Card Image"
+              name="cardImage"
+              control={control}
+              placeholder="Select Card Image"
+              setValue={setValue}
+              inputComponent="imageUploader"
+              id="cardImage"
+              errors={errors}
+              defaultValue=""
+              className="full-width-input"
             />
 
             <InputBox

@@ -96,9 +96,9 @@ const AddCategory = React.memo(() => {
               id="technologies"
               error={errors.technologies}
               defaultValue=""
-              rules={{
-                required: "Technologies is required",
-              }}
+              // rules={{
+              //   required: "Technologies is required",
+              // }}
               addButtonText="Add Technology"
               className="full-width-input"
             />

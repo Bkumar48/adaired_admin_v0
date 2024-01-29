@@ -63,7 +63,7 @@ const AddServices = React.memo(() => {
           `${import.meta.env.VITE_API_URL}/api/v1/services/`,
           data
         );
-        console.log(data);  
+        console.log(data);
         reset();
       } catch (error) {
         setError(`Something went wrong: ${error.message}`);
@@ -79,9 +79,7 @@ const AddServices = React.memo(() => {
       if (e.target.checked) {
         try {
           const response = await axios.get(
-            `${
-              import.meta.env.VITE_API_URL
-            }/api/v1/services/?allParent=true`
+            `${import.meta.env.VITE_API_URL}/api/v1/services/?allParent=true`
           );
           setMainServices(response.data.data);
           setIsChildService(true);
@@ -138,6 +136,9 @@ const AddServices = React.memo(() => {
                   label: service.serviceBanner,
                 }))}
                 className="full-width-input"
+                onChange={(e) => {
+                  setValue("parentId", e.value);
+                }}
               />
             )}
 

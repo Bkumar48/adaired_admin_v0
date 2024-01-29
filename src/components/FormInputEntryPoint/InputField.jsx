@@ -62,6 +62,7 @@ const InputField = React.memo((props) => {
             isMulti={props.multiple}
             options={props.options}
             onChange={props.onChange}
+            className={`SelectInput ${props.className}`}
           />
         </>
       );
@@ -111,15 +112,9 @@ const InputField = React.memo((props) => {
           apiKey="720nkcx75ws79fcln5kf33j5klsu2vkzoeqowjjuu3axulkt"
           init={{
             plugins:
-              "tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker   a11ychecker typography inlinecss",
+              "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
             toolbar:
-              "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
-            tinycomments_mode: "embedded",
-            tinycomments_author: "Bittu Kumar",
-            mergetags_list: [
-              { value: "First.Name", title: "First Name" },
-              { value: "Email", title: "Email" },
-            ],
+              "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
           }}
           onEditorChange={(content) => props.setValue(props.name, content)}
           value={props.field?.value}
@@ -322,15 +317,9 @@ const InputField = React.memo((props) => {
                   apiKey="720nkcx75ws79fcln5kf33j5klsu2vkzoeqowjjuu3axulkt"
                   init={{
                     plugins:
-                      "tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker   a11ychecker typography inlinecss",
+                      "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
                     toolbar:
-                      "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
-                    tinycomments_mode: "embedded",
-                    tinycomments_author: "Author name",
-                    mergetags_list: [
-                      { value: "First.Name", title: "First Name" },
-                      { value: "Email", title: "Email" },
-                    ],
+                      "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
                   }}
                   onEditorChange={(content) =>
                     handleInputBlur(index, content, "content")
@@ -623,15 +612,9 @@ const InputField = React.memo((props) => {
                       apiKey="720nkcx75ws79fcln5kf33j5klsu2vkzoeqowjjuu3axulkt"
                       init={{
                         plugins:
-                          "tinycomments mentions anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed permanentpen footnotes advtemplate advtable advcode editimage tableofcontents mergetags powerpaste tinymcespellchecker   a11ychecker typography inlinecss",
+                          "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
                         toolbar:
-                          "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | align lineheight | tinycomments | checklist numlist bullist indent outdent | emoticons charmap | removeformat",
-                        tinycomments_mode: "embedded",
-                        tinycomments_author: "Bittu Kumar",
-                        mergetags_list: [
-                          { value: "First.Name", title: "First Name" },
-                          { value: "Email", title: "Email" },
-                        ],
+                          "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
                       }}
                       onEditorChange={(content) => {
                         const newFields = [...combinedFields];
